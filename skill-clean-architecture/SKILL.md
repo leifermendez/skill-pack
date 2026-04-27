@@ -68,6 +68,7 @@ Detailed guides and examples in the `references/` folder:
 ### Code Style (Buenas prácticas)
 - [`references/code-style/early-return.md`](references/code-style/early-return.md) - Guard clauses, código plano
 - [`references/code-style/type-safe.md`](references/code-style/type-safe.md) - TypeScript strict, no any, branded types
+- [`references/code-style/jsdoc-tsdoc.md`](references/code-style/jsdoc-tsdoc.md) - Documentación con JSDoc/TSDoc
 
 ### Examples (Ejemplos prácticos)
 - [`references/examples/`](references/examples/) - Ejemplos completos de flujos
