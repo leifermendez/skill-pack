@@ -44,6 +44,28 @@ This skill enforces **only the essential 4 layers** of Clean Architecture. No co
 
 ---
 
+## Project Discovery
+
+When analyzing a project, always look for source code in these common folders:
+
+**Priority search locations:**
+1. `src/` - Standard source folder (Node.js, TypeScript, Java)
+2. `app/` - Common in Next.js, Rails, Django projects
+3. `lib/` - Library code (Elixir, Ruby, some Node.js)
+4. `codebase/` - Legacy or enterprise projects
+5. `packages/` - Monorepo structure
+6. `src/main/` - Java/Maven standard
+7. `src/app/` - Angular/NestJS default
+
+**If no standard folder found:**
+- Look for `.ts`, `.js`, `.py`, `.java` files in root
+- Check `package.json` for "main" entry point
+- Follow imports from entry files
+
+Always identify the main source directory before analyzing architecture.
+
+---
+
 ## References
 
 Based on principles from:
