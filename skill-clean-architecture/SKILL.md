@@ -66,6 +66,97 @@ Always identify the main source directory before analyzing architecture.
 
 ---
 
+## Improvement Roadmap (Risk/Impact Matrix)
+
+When proposing architectural improvements, always prioritize by **LOW RISK + FAST IMPACT** first.
+
+### The Improvement Matrix
+
+```
+                    IMPACT
+               Low        High
+           ┌──────────┬──────────┐
+    Low    │ Fill-Ins │ QUICK    │
+  RISK     │ (avoid)  │ WINS ⭐  │
+           ├──────────┼──────────┤
+    High   │ Hard     │ Major    │
+           │ Changes  │ Projects │
+           └──────────┴──────────┘
+```
+
+### Priority Order (Always follow this)
+
+#### 1. QUICK WINS ⭐ (Do First)
+**Low Risk + High Impact**
+- Add LAYER headers to existing files
+- Extract interfaces for repositories (no behavior change)
+- Move DTOs to Application layer
+- Simple dependency inversion (constructor injection)
+- **Effort:** Hours to 1-2 days
+- **Risk:** Minimal (additive, non-breaking)
+
+#### 2. MAJOR PROJECTS (Plan Carefully)
+**High Risk + High Impact**
+- Migrate from ActiveRecord to Repository pattern
+- Extract Domain layer from anemic models
+- Split monolithic use cases
+- Change ORM or database technology
+- **Effort:** Weeks
+- **Risk:** High (requires testing, gradual migration)
+
+#### 3. FILL-INS (Avoid or Do Last)
+**Low Risk + Low Impact**
+- Rename variables for "consistency"
+- Reformat code (prettier already does this)
+- Move files between folders without semantic change
+- Add comments to obvious code
+- **Effort:** Low
+- **Risk:** None
+- **Value:** Minimal - skip unless blocking other work
+
+#### 4. HARD CHANGES (Avoid or Defer)
+**High Risk + Low Impact**
+- Rewrite working code "just because"
+- Change naming conventions globally
+- Refactor stable legacy code with no bugs
+- **Effort:** High
+- **Risk:** High
+- **Value:** Low - avoid unless necessary
+
+### Migration Strategy Example
+
+**Week 1-2: Quick Wins**
+```
+✅ Add LAYER comments to all files
+✅ Create repository interfaces (implement later)
+✅ Move business logic from controllers to services
+```
+
+**Week 3-4: Setup Infrastructure**
+```
+✅ Implement one repository with tests
+✅ Add dependency injection container
+✅ Migrate one feature end-to-end
+```
+
+**Month 2+: Gradual Migration**
+```
+🔄 Migrate remaining features one by one
+🔄 Keep old code working during transition
+🔄 Test after each migration
+```
+
+### Rule of Thumb
+
+> **"Never break working code to 'improve' architecture. Evolution, not revolution."**
+
+- Always leave the codebase better than you found it
+- Make additive changes first (new layer alongside old)
+- Migrate incrementally (one use case at a time)
+- Tests are mandatory before structural changes
+
+---
+
 ## References
 
 Based on principles from:
