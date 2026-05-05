@@ -1,0 +1,130 @@
+# spec-ddd/feat-003-manual-invoicing.yml
+# Template: Pain Point - Manual Process Automation
+# Example of converting a business pain point to user story
+
+story:
+  id: "feat-003"
+  type: "pain"
+  status: "draft"
+
+  as_a: "Finance Team Member"
+  i_want: "Automated invoice generation from completed orders"
+  so_that: "I can eliminate manual data entry errors and reduce processing time by 80%"
+
+  description:
+    es: >
+      Automatización de facturación para eliminar procesos manuales que causan errores y retrasos.
+      Actualmente el equipo de finanzas pasa 20 horas semanales generando facturas manualmente
+      desde órdenes completadas, con un 15% de tasa de error.
+    en: >
+      Invoice automation to eliminate manual processes causing errors and delays.
+      Currently finance team spends 20 hours weekly generating invoices manually
+      from completed orders, with 15% error rate.
+
+  domain:
+    bounded_context: "Billing"
+    aggregate: "Invoice"
+    entities: ["Invoice", "InvoiceLine", "TaxCalculation"]
+    value_objects:
+      - "Money"
+      - "TaxRate"
+      - "InvoiceNumber"
+      - "PaymentTerms"
+    domain_events:
+      - "InvoiceGenerated"
+      - "InvoiceSent"
+      - "PaymentReceived"
+      - "PaymentOverdue"
+      - "InvoiceCorrected"
+
+  acceptance_criteria:
+    - id: "ac-01"
+      given: "Order status changes to completed"
+      when: "End of day batch process runs"
+      then: "Invoice is automatically generated and queued for sending"
+      es:
+        dado: "Estado de orden cambia a completado"
+        cuando: "Batch de fin de día ejecuta"
+        entonces: "Factura generada automáticamente y en cola de envío"
+
+    - id: "ac-02"
+      given: "Invoice is generated successfully"
+      when: "Customer email is valid"
+      then: "PDF invoice attached and sent via email within 5 minutes"
+      es:
+        dado: "Factura generada exitosamente"
+        cuando: "Email de cliente es válido"
+        entonces: "PDF adjunto y enviado por email dentro de 5 minutos"
+
+    - id: "ac-03"
+      given: "Customer has special payment terms"
+      when: "Invoice is generated"
+      then: "Payment terms reflect customer contract (Net 30, Net 60, etc.)"
+      es:
+        dado: "Cliente tiene términos de pago especiales"
+        cuando: "Factura es generada"
+        entonces: "Términos de pago reflejan contrato del cliente (Net 30, Net 60, etc.)"
+
+    - id: "ac-04"
+      given: "Tax jurisdiction requires specific calculation"
+      when: "Invoice includes taxable items"
+      then: "Tax calculated according to jurisdiction rules and item categories"
+      es:
+        dado: "Jurisdicción fiscal requiere cálculo específico"
+        cuando: "Factura incluye items gravables"
+        entonces: "Impuesto calculado según reglas de jurisdicción y categorías"
+
+  technical:
+    complexity: "high"
+    effort_hours: "80"
+    impact: "high"
+    risks:
+      - id: "risk-01"
+        description: "Tax calculation errors due to changing regulations"
+        mitigation: "Integration with tax service API (Avalara/TaxJar), audit logs"
+      - id: "risk-02"
+        description: "Failed invoice generation blocks end-of-day processing"
+        mitigation: "Dead letter queue for failed invoices, manual retry UI"
+      - id: "risk-03"
+        description: "Duplicate invoice generation"
+        mitigation: "Idempotency keys, unique constraints on order-invoice mapping"
+      - id: "risk-04"
+        description: "PDF generation performance at scale"
+        mitigation: "Async processing, caching, PDF service with auto-scaling"
+
+  business:
+    priority: "P1"
+    kpis_impacted:
+      - "Invoice Processing Time"
+      - "Error Rate"
+      - "Cash Flow (Days Sales Outstanding)"
+      - "Customer Satisfaction"
+    revenue_impact: "Medium - faster payment collection"
+    cost_savings: "$52K/year (20 hrs/week × $50/hr × 52 weeks)"
+
+  dependencies:
+    stories:
+      - "feat-001"
+      - "feat-002-order-management"
+    systems:
+      - "Order Management System"
+      - "Email Service"
+      - "Tax Calculation API"
+      - "PDF Generation Service"
+    teams:
+      - "Finance Team"
+      - "Billing Engineering"
+      - "Platform Team"
+
+  notes:
+    - "Current pain: 15% error rate, 3-day average delay"
+    - "Target: <1% error rate, <1 hour processing"
+    - "Compliance: Must support multi-currency and international tax"
+    - "Audit requirement: All invoice changes logged with reason"
+    - "Integration with accounting system (QuickBooks/Xero) needed in Phase 2"
+
+  metadata:
+    created_at: "YYYY-MM-DD"
+    updated_at: "YYYY-MM-DD"
+    author: "System"
+    source: "discovery"

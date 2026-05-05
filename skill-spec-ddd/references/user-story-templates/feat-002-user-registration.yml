@@ -1,0 +1,107 @@
+# spec-ddd/feat-002-user-registration.yml
+# Template: Scope Item - User Registration Feature
+# Example of a functional scope item converted to user story
+
+story:
+  id: "feat-002"
+  type: "scope"
+  status: "refined"
+
+  as_a: "New Customer"
+  i_want: "Register for an account with email verification"
+  so_that: "I can securely access the platform features"
+
+  description:
+    es: "Sistema de registro de usuarios con verificación por email, validación de datos y prevención de duplicados"
+    en: "User registration system with email verification, data validation and duplicate prevention"
+
+  domain:
+    bounded_context: "IdentityManagement"
+    aggregate: "User"
+    entities: ["User", "EmailVerification"]
+    value_objects: ["Email", "Password", "VerificationToken"]
+    domain_events:
+      - "UserRegistered"
+      - "EmailVerificationSent"
+      - "EmailVerified"
+      - "RegistrationFailed"
+
+  acceptance_criteria:
+    - id: "ac-01"
+      given: "Valid email and strong password provided"
+      when: "User submits registration form"
+      then: "Account is created with status 'pending' and verification email sent"
+      es:
+        dado: "Email válido y contraseña segura proporcionados"
+        cuando: "Usuario envía formulario de registro"
+        entonces: "Cuenta creada con estado 'pendiente' y email de verificación enviado"
+
+    - id: "ac-02"
+      given: "Email already exists in system"
+      when: "User attempts registration"
+      then: "System shows generic error without revealing account existence"
+      es:
+        dado: "Email ya existe en el sistema"
+        cuando: "Usuario intenta registrarse"
+        entonces: "Sistema muestra error genérico sin revelar existencia de cuenta"
+
+    - id: "ac-03"
+      given: "User clicks verification link"
+      when: "Token is valid and not expired"
+      then: "Account status changes to 'active' and welcome email sent"
+      es:
+        dado: "Usuario hace clic en enlace de verificación"
+        cuando: "Token es válido y no expirado"
+        entonces: "Estado de cuenta cambia a 'activa' y email de bienvenida enviado"
+
+    - id: "ac-04"
+      given: "Invalid email format provided"
+      when: "User submits form"
+      then: "Validation error displayed with specific field indication"
+      es:
+        dado: "Formato de email inválido proporcionado"
+        cuando: "Usuario envía formulario"
+        entonces: "Error de validación mostrado con indicación específica del campo"
+
+  technical:
+    complexity: "medium"
+    effort_hours: "24"
+    impact: "high"
+    risks:
+      - id: "risk-01"
+        description: "Email delivery failures impact user activation"
+        mitigation: "Implement retry logic with exponential backoff, fallback to SMS"
+      - id: "risk-02"
+        description: "User enumeration attack through error messages"
+        mitigation: "Generic error messages, consistent response times"
+      - id: "risk-03"
+        description: "Token brute force attempts"
+        mitigation: "Rate limiting, token expiration after 24 hours, max attempts"
+
+  business:
+    priority: "P0"
+    kpis_impacted:
+      - "User Acquisition"
+      - "Activation Rate"
+      - "Time to First Value"
+    revenue_impact: "Critical - entry point for all revenue"
+    cost_savings: "N/A"
+
+  dependencies:
+    stories: ["feat-001"]
+    systems:
+      - "Email Service (SendGrid/AWS SES)"
+      - "PostgreSQL Database"
+      - "Redis Cache"
+    teams: ["Identity Team", "Platform Team"]
+
+  notes:
+    - "GDPR compliance required - explicit consent checkbox"
+    - "Must support international phone numbers if SMS fallback used"
+    - "Consider social login integration in future (Google, GitHub)"
+
+  metadata:
+    created_at: "YYYY-MM-DD"
+    updated_at: "YYYY-MM-DD"
+    author: "System"
+    source: "discovery"
