@@ -1,4 +1,4 @@
-# spec-ddd/feat-003-manual-invoicing.yml
+# spec-product/feat-003-manual-invoicing.yml
 # Template: Pain Point - Manual Process Automation
 # Example of converting a business pain point to user story
 
@@ -11,68 +11,46 @@ story:
   i_want: "Automated invoice generation from completed orders"
   so_that: "I can eliminate manual data entry errors and reduce processing time by 80%"
 
-  description:
-    es: >
-      Automatización de facturación para eliminar procesos manuales que causan errores y retrasos.
-      Actualmente el equipo de finanzas pasa 20 horas semanales generando facturas manualmente
-      desde órdenes completadas, con un 15% de tasa de error.
-    en: >
-      Invoice automation to eliminate manual processes causing errors and delays.
-      Currently finance team spends 20 hours weekly generating invoices manually
-      from completed orders, with 15% error rate.
+  description: >
+    Invoice automation to eliminate manual processes causing errors and delays.
+    Currently finance team spends 20 hours weekly generating invoices manually
+    from completed orders, with 15% error rate.
 
-  domain:
-    bounded_context: "Billing"
-    aggregate: "Invoice"
-    entities: ["Invoice", "InvoiceLine", "TaxCalculation"]
-    value_objects:
-      - "Money"
-      - "TaxRate"
-      - "InvoiceNumber"
-      - "PaymentTerms"
-    domain_events:
+  product:
+    feature_area: "Billing"
+    user_journey: "Order to Cash"
+    success_metrics:
+      - "Invoice processing time < 1 hour"
+      - "Error rate < 1%"
+      - "Days Sales Outstanding reduced by 20%"
+    mockup_links:
+      - "https://figma.com/file/xxx/invoice-automation"
+    analytics_events:
       - "InvoiceGenerated"
       - "InvoiceSent"
       - "PaymentReceived"
       - "PaymentOverdue"
-      - "InvoiceCorrected"
 
   acceptance_criteria:
     - id: "ac-01"
       given: "Order status changes to completed"
       when: "End of day batch process runs"
       then: "Invoice is automatically generated and queued for sending"
-      es:
-        dado: "Estado de orden cambia a completado"
-        cuando: "Batch de fin de día ejecuta"
-        entonces: "Factura generada automáticamente y en cola de envío"
 
     - id: "ac-02"
       given: "Invoice is generated successfully"
       when: "Customer email is valid"
       then: "PDF invoice attached and sent via email within 5 minutes"
-      es:
-        dado: "Factura generada exitosamente"
-        cuando: "Email de cliente es válido"
-        entonces: "PDF adjunto y enviado por email dentro de 5 minutos"
 
     - id: "ac-03"
       given: "Customer has special payment terms"
       when: "Invoice is generated"
       then: "Payment terms reflect customer contract (Net 30, Net 60, etc.)"
-      es:
-        dado: "Cliente tiene términos de pago especiales"
-        cuando: "Factura es generada"
-        entonces: "Términos de pago reflejan contrato del cliente (Net 30, Net 60, etc.)"
 
     - id: "ac-04"
       given: "Tax jurisdiction requires specific calculation"
       when: "Invoice includes taxable items"
       then: "Tax calculated according to jurisdiction rules and item categories"
-      es:
-        dado: "Jurisdicción fiscal requiere cálculo específico"
-        cuando: "Factura incluye items gravables"
-        entonces: "Impuesto calculado según reglas de jurisdicción y categorías"
 
   technical:
     complexity: "high"

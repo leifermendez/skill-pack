@@ -1,67 +1,52 @@
-# spec-ddd/feat-002-user-registration.yml
-# Template: Scope Item - User Registration Feature
-# Example of a functional scope item converted to user story
+# spec-product/feat-002-user-registration.yml
+# Template: Feature - User Registration
+# Example of a functional feature converted to user story
 
 story:
   id: "feat-002"
-  type: "scope"
+  type: "feature"
   status: "refined"
 
   as_a: "New Customer"
   i_want: "Register for an account with email verification"
   so_that: "I can securely access the platform features"
 
-  description:
-    es: "Sistema de registro de usuarios con verificación por email, validación de datos y prevención de duplicados"
-    en: "User registration system with email verification, data validation and duplicate prevention"
+  description: "User registration system with email verification, data validation and duplicate prevention"
 
-  domain:
-    bounded_context: "IdentityManagement"
-    aggregate: "User"
-    entities: ["User", "EmailVerification"]
-    value_objects: ["Email", "Password", "VerificationToken"]
-    domain_events:
-      - "UserRegistered"
+  product:
+    feature_area: "Identity & Access"
+    user_journey: "Onboarding"
+    success_metrics:
+      - "Registration completion rate > 85%"
+      - "Email verification rate > 90%"
+    mockup_links:
+      - "https://figma.com/file/xxx/onboarding-flow"
+    analytics_events:
+      - "RegistrationStarted"
+      - "RegistrationCompleted"
       - "EmailVerificationSent"
       - "EmailVerified"
-      - "RegistrationFailed"
 
   acceptance_criteria:
     - id: "ac-01"
       given: "Valid email and strong password provided"
       when: "User submits registration form"
       then: "Account is created with status 'pending' and verification email sent"
-      es:
-        dado: "Email válido y contraseña segura proporcionados"
-        cuando: "Usuario envía formulario de registro"
-        entonces: "Cuenta creada con estado 'pendiente' y email de verificación enviado"
 
     - id: "ac-02"
       given: "Email already exists in system"
       when: "User attempts registration"
       then: "System shows generic error without revealing account existence"
-      es:
-        dado: "Email ya existe en el sistema"
-        cuando: "Usuario intenta registrarse"
-        entonces: "Sistema muestra error genérico sin revelar existencia de cuenta"
 
     - id: "ac-03"
       given: "User clicks verification link"
       when: "Token is valid and not expired"
       then: "Account status changes to 'active' and welcome email sent"
-      es:
-        dado: "Usuario hace clic en enlace de verificación"
-        cuando: "Token es válido y no expirado"
-        entonces: "Estado de cuenta cambia a 'activa' y email de bienvenida enviado"
 
     - id: "ac-04"
       given: "Invalid email format provided"
       when: "User submits form"
       then: "Validation error displayed with specific field indication"
-      es:
-        dado: "Formato de email inválido proporcionado"
-        cuando: "Usuario envía formulario"
-        entonces: "Error de validación mostrado con indicación específica del campo"
 
   technical:
     complexity: "medium"
@@ -84,8 +69,7 @@ story:
       - "User Acquisition"
       - "Activation Rate"
       - "Time to First Value"
-    revenue_impact: "Critical - entry point for all revenue"
-    cost_savings: "N/A"
+    revenue_impact: "Critical - entry point for all users"
 
   dependencies:
     stories: ["feat-001"]

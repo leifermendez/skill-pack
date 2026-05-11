@@ -1,0 +1,68 @@
+# spec-product/feat-001-discovery.yml
+# Template: Discovery Phase Summary
+# Use this as the first user story to document the discovery phase completion
+
+story:
+  id: "feat-001"
+  type: "discovery"
+  status: "done"
+
+  as_a: "Product Manager"
+  i_want: "Document all discovery findings"
+  so_that: "We have a clear baseline for prioritization and specification"
+
+  description: "Summary of discovery phase with 3+ problem statements, context items, and requests identified"
+
+  product:
+    feature_area: "N/A - Discovery Phase"
+    user_journey: "N/A"
+    success_metrics: []
+    mockup_links: []
+    analytics_events: []
+
+  acceptance_criteria:
+    - id: "ac-01"
+      given: "Discovery phase initiated"
+      when: "Stakeholder interviews completed"
+      then: "Minimum 3 problem statements documented"
+
+    - id: "ac-02"
+      given: "Context gathering started"
+      when: "Constraints and boundaries identified"
+      then: "Minimum 3 context items documented"
+
+    - id: "ac-03"
+      given: "Request collection started"
+      when: "User and stakeholder feedback reviewed"
+      then: "Minimum 3 requests or ideas documented"
+
+  technical:
+    complexity: "low"
+    effort_hours: "8"
+    impact: "high"
+    risks: []
+
+  business:
+    priority: "P0"
+    kpis_impacted: ["Project Clarity", "Stakeholder Alignment"]
+
+  dependencies:
+    stories: []
+    systems: []
+    teams: []
+
+  git:
+    branch_name: "feat/feat-001-discovery-documentation"
+    commit_prefix: "docs(feat-001):"
+    pr_title: "docs(feat-001): Discovery Phase Documentation"
+    related_commits: []
+
+  notes:
+    - "This story is auto-generated at the end of Phase 1"
+    - "All subsequent stories depend on this being marked 'done'"
+
+  metadata:
+    created_at: "YYYY-MM-DD"
+    updated_at: "YYYY-MM-DD"
+    author: "System"
+    source: "discovery"
