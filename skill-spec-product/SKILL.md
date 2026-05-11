@@ -62,11 +62,15 @@ bash references/validate-specs.sh
 - `dd-mm-yy-hh-mm`: Creation timestamp. 2-digit year.
 - Example: `spec-product/feat-0001-15-05-26-14-30/`
 
-**File Format (inside folder):** `feat-XXXX.yml`
+**File Format (inside folder):** `feat-XXXX.yml` (archivo principal)
 
-- Only the ID. No timestamp, no descriptive slug.
-- One file per folder. No additional files.
-- Example: `spec-product/feat-0001-15-05-26-14-30/feat-0001.yml`
+- Archivo principal: solo el ID, sin timestamp ni slug descriptivo.
+- Se permite incluir archivos YAML adicionales relacionados con la misma feature (por ejemplo, discovery, especificacion, validacion, handoff).
+- Todos los archivos `.yml` de una feature deben vivir dentro de su carpeta `feat-XXXX-.../`.
+- Example:
+  - `spec-product/feat-0001-15-05-26-14-30/feat-0001.yml`
+  - `spec-product/feat-0001-15-05-26-14-30/feat-0001-discovery.yml`
+  - `spec-product/feat-0001-15-05-26-14-30/feat-0001-handoff.yml`
 
 ---
 
@@ -83,11 +87,11 @@ Then verify manually:
 1. List all `spec-product/feat-*/` directories created in this phase.
 2. For each directory, verify:
    - [ ] Directory name follows `feat-XXXX-dd-mm-yy-hh-mm/` format
-   - [ ] Directory contains exactly one file: `feat-XXXX.yml`
-   - [ ] YAML file is valid and non-empty
-   - [ ] YAML has required fields: id, type, as_a, i_want, so_that, product, metadata.created_at
-   - [ ] `metadata.created_at` matches the directory timestamp (dd-mm-yy-hh-mm)
-   - [ ] ID in YAML matches ID in directory name
+   - [ ] Directory contains at least the archivo principal: `feat-XXXX.yml`
+   - [ ] Todos los archivos `.yml` dentro del directorio son YAML validos y no vacios
+   - [ ] El archivo principal (`feat-XXXX.yml`) tiene los campos requeridos: id, type, as_a, i_want, so_that, product, metadata.created_at
+   - [ ] `metadata.created_at` en el archivo principal coincide con el timestamp del directorio (dd-mm-yy-hh-mm)
+   - [ ] ID en YAML del archivo principal coincide con el ID del directorio
 3. If any check fails:
    - Do NOT proceed to the next phase
    - Report the exact failure

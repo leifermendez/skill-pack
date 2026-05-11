@@ -98,7 +98,7 @@ spec-product/
 - Use sequential 4-digit numbering: `feat-0001`, `feat-0002`, etc. No gaps.
 - Folder name includes timestamp: `feat-XXXX-dd-mm-yy-hh-mm/`
 - File inside folder: `feat-XXXX.yml` (no timestamp, no slug)
-- One file per folder. No additional files.
+- Archivo principal: `feat-XXXX.yml`. Se permiten archivos YAML adicionales relacionados con la misma feature dentro de la carpeta.
 
 #### Git Naming Conventions
 
@@ -249,7 +249,8 @@ Toda la salida de esta fase son archivos YAML creados dentro de `spec-product/`.
 - [ ] Minimum 3 requests/ideas documented
 - [ ] Stakeholder map created
 - [ ] Spec folders created in `spec-product/` following naming convention
-- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
+- [ ] Each folder contains at least the archivo principal: `feat-XXXX.yml`
+- [ ] Todos los archivos `.yml` adicionales relacionados con la feature viven dentro de la misma carpeta
 - [ ] All YAML files follow the schema (id, type, as_a, i_want, so_that, product)
 - [ ] `metadata.created_at` matches folder timestamp
 - [ ] Git naming conventions documented for the team

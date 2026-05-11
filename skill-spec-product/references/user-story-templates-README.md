@@ -25,11 +25,14 @@ Each user story YAML file captures:
 - `dd-mm-yy-hh-mm`: Creation timestamp. 2-digit year.
 - Example: `spec-product/feat-0001-15-05-26-14-30/`
 
-**File Format (inside folder):** `feat-XXXX.yml`
+**File Format (inside folder):** `feat-XXXX.yml` (archivo principal)
 
-- Only the ID. No timestamp, no descriptive slug.
-- One file per folder. No additional files.
-- Example: `spec-product/feat-0001-15-05-26-14-30/feat-0001.yml`
+- Archivo principal: solo el ID, sin timestamp ni slug descriptivo.
+- Se permite incluir archivos YAML adicionales relacionados con la misma feature dentro de la misma carpeta.
+- Example:
+  - `spec-product/feat-0001-15-05-26-14-30/feat-0001.yml`
+  - `spec-product/feat-0001-15-05-26-14-30/feat-0001-discovery.yml`
+  - `spec-product/feat-0001-15-05-26-14-30/feat-0001-handoff.yml`
 
 ## Story Types
 
@@ -222,8 +225,9 @@ Before marking a user story as "ready":
 - [ ] Dependencies identified
 - [ ] Metadata filled (created_at, updated_at, author, source)
 - [ ] Folder name follows `feat-XXXX-dd-mm-yy-hh-mm/` format
-- [ ] File inside folder is `feat-XXXX.yml`
-- [ ] `metadata.created_at` matches folder timestamp
+- [ ] Folder contains at least the archivo principal `feat-XXXX.yml`
+- [ ] All `.yml` files inside the folder are valid YAML
+- [ ] `metadata.created_at` in the main file matches folder timestamp
 
 ## Example Directory Structure
 
@@ -231,11 +235,15 @@ Before marking a user story as "ready":
 project/
 ├── spec-product/
 │   ├── feat-0001-15-05-26-14-30/
-│   │   └── feat-0001.yml
+│   │   ├── feat-0001.yml
+│   │   ├── feat-0001-discovery.yml
+│   │   └── feat-0001-handoff.yml
 │   ├── feat-0002-15-05-26-16-45/
-│   │   └── feat-0002.yml
+│   │   ├── feat-0002.yml
+│   │   └── feat-0002-specification.yml
 │   ├── feat-0003-15-05-26-18-00/
-│   │   └── feat-0003.yml
+│   │   ├── feat-0003.yml
+│   │   └── feat-0003-validation.yml
 │   └── feat-0004-16-05-26-09-15/
 │       └── feat-0004.yml
 ├── design/

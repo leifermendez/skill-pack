@@ -154,7 +154,7 @@ KICKOFF AGENDA (30-45 minutes)
 - Traceability matrix
 - Kickoff session completed
 - Updated spec statuses (if any gaps were found during kickoff)
-- All `spec-product/feat-*/` folders verified: naming convention intact, one file per folder, timestamps match
+- All `spec-product/feat-*/` folders verified: naming convention intact, main file present, timestamps match
 
 ---
 
@@ -168,7 +168,8 @@ KICKOFF AGENDA (30-45 minutes)
 - [ ] Story statuses updated to `done` (from a product perspective)
 - [ ] Engineering has confirmed they have everything needed to begin
 - [ ] All spec folders follow naming convention: `feat-XXXX-dd-mm-yy-hh-mm/`
-- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
+- [ ] Each folder contains at least the archivo principal: `feat-XXXX.yml`
+- [ ] Archivos `.yml` adicionales relacionados viven dentro de la carpeta de la feature
 - [ ] `metadata.updated_at` timestamp updated on modified specs
 
 ---

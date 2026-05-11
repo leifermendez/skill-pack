@@ -118,7 +118,7 @@ Step 5: [Outcome — how does the user know it worked?]
 - `business:` priorities and KPIs confirmed
 - User flows for complex features
 - Edge cases and unhappy paths documented
-- All `spec-product/feat-*/` folders verified: naming convention intact, one file per folder
+- All `spec-product/feat-*/` folders verified: naming convention intact, main file present
 
 ---
 
@@ -135,7 +135,8 @@ Step 5: [Outcome — how does the user know it worked?]
 - [ ] Story status updated to `ready` or `in-review`
 - [ ] `metadata.updated_at` timestamp updated on modified specs
 - [ ] All spec folders follow naming convention: `feat-XXXX-dd-mm-yy-hh-mm/`
-- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
+- [ ] Each folder contains at least the archivo principal: `feat-XXXX.yml`
+- [ ] Archivos `.yml` adicionales relacionados viven dentro de la carpeta de la feature
 
 ---
 

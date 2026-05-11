@@ -24,7 +24,8 @@
 #   1. spec-product/ directory exists (creates if missing)
 #   2. No stray files directly under spec-product/
 #   3. Each subfolder follows feat-XXXX-dd-mm-yy-hh-mm/ format
-#   4. Each subfolder contains exactly one file: feat-XXXX.yml
+#   4. Each subfolder must contain at least the main file: feat-XXXX.yml
+#      Additional .yml files related to the same feature are allowed
 #   5. YAML is syntactically valid
 #   6. YAML contains all required fields: id, type, as_a, i_want, so_that, product
 #   7. story.id matches the folder ID
@@ -139,46 +140,57 @@ for DIR in "${FEAT_DIRS[@]}"; do
   TS_DATE=$(echo "$BASENAME" | cut -d'-' -f3-8)        # dd-mm-yy-hh-mm
   EXPECTED_FILE="${FEAT_ID}.yml"
 
-  # 5b. Check exactly one file inside (and no subdirectories)
+  # 5b. Check for unexpected subdirectories
   SUBDIRS=$(find "$DIR" -mindepth 1 -type d | wc -l | tr -d ' ')
   if [[ "$SUBDIRS" -gt 0 ]]; then
     log_warn "Folder '$BASENAME' contains $SUBDIRS unexpected subdirectory(ies)."
   fi
 
-  FILE_COUNT=$(find "$DIR" -maxdepth 1 -type f | wc -l | tr -d ' ')
-  if [[ "$FILE_COUNT" -eq 0 ]]; then
-    log_error "Folder '$BASENAME' is empty. Expected exactly 1 file: $EXPECTED_FILE."
-    continue
-  fi
-  if [[ "$FILE_COUNT" -ne 1 ]]; then
-    log_error "Folder '$BASENAME' must contain exactly 1 file, found $FILE_COUNT."
+  # 5c. Check that the main file feat-XXXX.yml exists
+  MAIN_FILE="$DIR/$EXPECTED_FILE"
+  if [[ ! -f "$MAIN_FILE" ]]; then
+    log_error "Folder '$BASENAME' missing required main file: $EXPECTED_FILE."
     continue
   fi
 
-  FILE_PATH=$(find "$DIR" -maxdepth 1 -type f | head -n1)
-  FILE_NAME=$(basename "$FILE_PATH")
+  # 5d. Validate all .yml files in the folder
+  YML_FILES=()
+  while IFS= read -r f; do
+    [[ -n "$f" ]] && YML_FILES+=("$f")
+  done < <(find "$DIR" -maxdepth 1 -type f -name "*.yml" | sort)
 
-  # 5c. Filename must match feat-XXXX.yml
-  if [[ "$FILE_NAME" != "$EXPECTED_FILE" ]]; then
-    log_error "Folder '$BASENAME' contains '$FILE_NAME', expected '$EXPECTED_FILE'."
-    continue
+  # Check for stray non-.yml files
+  ALL_FILES=()
+  while IFS= read -r f; do
+    [[ -n "$f" ]] && ALL_FILES+=("$f")
+  done < <(find "$DIR" -maxdepth 1 -type f | sort)
+  if [[ ${#ALL_FILES[@]} -ne ${#YML_FILES[@]} ]]; then
+    log_warn "Folder '$BASENAME' contains non-.yml files. Only YAML files should live inside spec folders."
   fi
 
-  # 5d. YAML syntax check (yamllint or python3)
-  if [[ "$HAS_YAMLLINT" == true ]]; then
-    if ! yamllint -d relaxed "$FILE_PATH" > /dev/null 2>&1; then
-      log_warn "YAML syntax issues in '$FILE_NAME'. Run 'yamllint $FILE_PATH' for details."
+  MAIN_VALIDATED=false
+  ALL_FILES_VALID=true
+  for FILE_PATH in "${YML_FILES[@]}"; do
+    FILE_NAME=$(basename "$FILE_PATH")
+
+    # YAML syntax check (yamllint or python3)
+    if [[ "$HAS_YAMLLINT" == true ]]; then
+      if ! yamllint -d relaxed "$FILE_PATH" > /dev/null 2>&1; then
+        log_warn "YAML syntax issues in '$FILE_NAME'. Run 'yamllint $FILE_PATH' for details."
+      fi
     fi
-  fi
 
-  # Python3 always available here (checked earlier)
-  if ! python3 -c "import yaml; yaml.safe_load(open('$FILE_PATH'))" 2>/dev/null; then
-    log_error "Invalid YAML syntax in '$FILE_NAME'."
-    continue
-  fi
+    # Python3 always available here (checked earlier)
+    if ! python3 -c "import yaml; yaml.safe_load(open('$FILE_PATH'))" 2>/dev/null; then
+      log_error "Invalid YAML syntax in '$FILE_NAME'."
+      ALL_FILES_VALID=false
+      continue
+    fi
 
-  # 5e. Validate required YAML fields via python3
-  VALIDATION_RESULT=$(python3 -c "
+    # Strict validation only for the main file feat-XXXX.yml
+    if [[ "$FILE_NAME" == "$EXPECTED_FILE" ]]; then
+      # 5e. Validate required YAML fields via python3
+      VALIDATION_RESULT=$(python3 -c "
 import yaml, sys
 try:
     data = yaml.safe_load(open('$FILE_PATH'))
@@ -200,65 +212,71 @@ except Exception as e:
     print('PARSE_ERROR:' + str(e))
 " 2>/dev/null || echo "PARSE_ERROR")
 
-  if [[ "$VALIDATION_RESULT" == PARSE_ERROR* ]]; then
-    log_error "Failed to parse YAML fields in '$FILE_NAME'."
-    continue
-  fi
-  if [[ "$VALIDATION_RESULT" == MISSING* ]]; then
-    MISSING_FIELDS=$(echo "$VALIDATION_RESULT" | sed 's/MISSING://')
-    log_error "'$FILE_NAME' missing required fields: $MISSING_FIELDS"
-    continue
-  fi
+      if [[ "$VALIDATION_RESULT" == PARSE_ERROR* ]]; then
+        log_error "Failed to parse YAML fields in '$FILE_NAME'."
+        continue 2
+      fi
+      if [[ "$VALIDATION_RESULT" == MISSING* ]]; then
+        MISSING_FIELDS=$(echo "$VALIDATION_RESULT" | sed 's/MISSING://')
+        log_error "'$FILE_NAME' missing required fields: $MISSING_FIELDS"
+        continue 2
+      fi
 
-  # 5f. ID in YAML matches folder ID
-  YAML_ID=$(python3 -c "
+      # 5f. ID in YAML matches folder ID
+      YAML_ID=$(python3 -c "
 import yaml
 data = yaml.safe_load(open('$FILE_PATH'))
 print(data.get('story', {}).get('id', 'MISSING'))
 " 2>/dev/null || echo "MISSING")
 
-  if [[ "$YAML_ID" != "$FEAT_ID" ]]; then
-    log_error "YAML id='$YAML_ID' does not match folder '$FEAT_ID'."
-    continue
-  fi
+      if [[ "$YAML_ID" != "$FEAT_ID" ]]; then
+        log_error "YAML id='$YAML_ID' does not match folder '$FEAT_ID'."
+        continue 2
+      fi
 
-  # 5g. Validate status against allowed values
-  YAML_STATUS=$(python3 -c "
+      # 5g. Validate status against allowed values
+      YAML_STATUS=$(python3 -c "
 import yaml
 data = yaml.safe_load(open('$FILE_PATH'))
 print(data.get('story', {}).get('status', 'MISSING'))
 " 2>/dev/null || echo "MISSING")
 
-  if [[ "$YAML_STATUS" != "draft" && "$YAML_STATUS" != "refined" && "$YAML_STATUS" != "ready" && "$YAML_STATUS" != "in-review" && "$YAML_STATUS" != "approved" && "$YAML_STATUS" != "done" ]]; then
-    log_warn "'$FILE_NAME' has invalid status='$YAML_STATUS'. Must be one of: draft|refined|ready|in-review|approved|done."
-  fi
+      if [[ "$YAML_STATUS" != "draft" && "$YAML_STATUS" != "refined" && "$YAML_STATUS" != "ready" && "$YAML_STATUS" != "in-review" && "$YAML_STATUS" != "approved" && "$YAML_STATUS" != "done" ]]; then
+        log_warn "'$FILE_NAME' has invalid status='$YAML_STATUS'. Must be one of: draft|refined|ready|in-review|approved|done."
+      fi
 
-  # 5h. created_at matches folder timestamp
-  CREATED_AT=$(python3 -c "
+      # 5h. created_at matches folder timestamp
+      CREATED_AT=$(python3 -c "
 import yaml
 data = yaml.safe_load(open('$FILE_PATH'))
 print(data.get('story', {}).get('metadata', {}).get('created_at', 'MISSING'))
 " 2>/dev/null || echo "MISSING")
 
-  if [[ "$CREATED_AT" != "$TS_DATE" && "$CREATED_AT" != "dd-mm-yy-hh-mm" ]]; then
-    log_warn "metadata.created_at='$CREATED_AT' does not match folder timestamp '$TS_DATE'."
-  fi
+      if [[ "$CREATED_AT" != "$TS_DATE" && "$CREATED_AT" != "dd-mm-yy-hh-mm" ]]; then
+        log_warn "metadata.created_at='$CREATED_AT' does not match folder timestamp '$TS_DATE'."
+      fi
 
-  # 5i. updated_at format (if present)
-  UPDATED_AT=$(python3 -c "
+      # 5i. updated_at format (if present)
+      UPDATED_AT=$(python3 -c "
 import yaml
 data = yaml.safe_load(open('$FILE_PATH'))
 print(data.get('story', {}).get('metadata', {}).get('updated_at', ''))
 " 2>/dev/null || echo "")
 
-  if [[ -n "$UPDATED_AT" && "$UPDATED_AT" != "dd-mm-yy-hh-mm" ]]; then
-    if [[ ! "$UPDATED_AT" =~ ^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
-      log_warn "metadata.updated_at='$UPDATED_AT' does not match 'dd-mm-yy-hh-mm' format."
-    fi
-  fi
+      if [[ -n "$UPDATED_AT" && "$UPDATED_AT" != "dd-mm-yy-hh-mm" ]]; then
+        if [[ ! "$UPDATED_AT" =~ ^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
+          log_warn "metadata.updated_at='$UPDATED_AT' does not match 'dd-mm-yy-hh-mm' format."
+        fi
+      fi
 
-  log_ok "$BASENAME/ → $FILE_NAME (id=$YAML_ID, status=$YAML_STATUS)"
-  ((SPECS_CHECKED++)) || true
+      MAIN_VALIDATED=true
+    fi
+  done
+
+  if [[ "$MAIN_VALIDATED" == true && "$ALL_FILES_VALID" == true ]]; then
+    log_ok "$BASENAME/ → ${#YML_FILES[@]} YAML file(s) (main id=$YAML_ID, status=$YAML_STATUS)"
+    ((SPECS_CHECKED++)) || true
+  fi
 done
 
 # ── 6. Check for sequential IDs (no gaps) ──────────────────────────────────

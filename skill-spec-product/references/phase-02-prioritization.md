@@ -116,7 +116,7 @@ If a dependency is scheduled later, either:
 - Quarter roadmap (Q1, Q2, Q3+)
 - Dependency conflict resolution
 - Updated YAML files with `business.priority` and `dependencies` filled
-- Spec folders verified: naming convention, timestamps match, one file per folder
+- Spec folders verified: naming convention, timestamps match, main file present
 
 ---
 

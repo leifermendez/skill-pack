@@ -116,7 +116,7 @@ Signed by:
 - Risk register with owners and response plans
 - Go / No-Go decisions for all P0 stories
 - Story statuses updated to `approved`
-- All `spec-product/feat-*/` folders verified: naming convention intact, one file per folder, timestamps match
+- All `spec-product/feat-*/` folders verified: naming convention intact, main file present, timestamps match
 
 ---
 
@@ -130,7 +130,8 @@ Signed by:
 - [ ] Story statuses updated to `approved`
 - [ ] Engineering lead has acknowledged readiness to receive handoff
 - [ ] All spec folders follow naming convention: `feat-XXXX-dd-mm-yy-hh-mm/`
-- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
+- [ ] Each folder contains at least the archivo principal: `feat-XXXX.yml`
+- [ ] Archivos `.yml` adicionales relacionados viven dentro de la carpeta de la feature
 - [ ] `metadata.updated_at` timestamp updated on modified specs
 
 ---
