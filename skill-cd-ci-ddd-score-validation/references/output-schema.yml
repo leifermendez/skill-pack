@@ -1,0 +1,199 @@
+# Output Schema
+
+This is the exact YAML structure the agent must generate as `ddd-score-report.yml`.
+
+## Example
+
+```yaml
+project: my-backend-api
+score: 3.2
+max_score: 5
+summary: >
+  The project has a clear Domain and Application layer, but Infrastructure
+  leaks into Domain via Prisma imports. Naming conventions are inconsistent
+  (mixed camelCase and kebab-case). No LAYER headers found. Business logic
+  was detected in the UserController. Refactoring should prioritize moving
+  Prisma imports out of Domain and extracting business rules from controllers.
+metadata:
+  audited_at: "2026-05-11T14:30:00Z"
+  auditor: skill-cd-ci-ddd-score-validation
+  version: "1.0"
+  gate: moderate
+  source_root: /path/to/project/src
+  total_files: 142
+  languages:
+    - typescript
+    - javascript
+layers_detected:
+  - name: Domain
+    path: src/domain
+    file_count: 12
+    types:
+      - entity
+      - value-object
+      - repository-interface
+  - name: Application
+    path: src/application
+    file_count: 8
+    types:
+      - use-case
+      - dto
+      - port
+  - name: Infrastructure
+    path: src/infrastructure
+    file_count: 6
+    types:
+      - repository-impl
+      - service-infra
+  - name: Interface
+    path: src/interface
+    file_count: 4
+    types:
+      - controller
+      - middleware
+violations:
+  - file: src/domain/entities/user.entity.ts
+    rule: DOMAIN_NO_EXTERNAL_DEPS
+    severity: critical
+    layer: Domain
+    message: Domain entity imports PrismaClient from Infrastructure
+    suggestion: "Move 'import { PrismaClient }' from src/domain/entities/user.entity.ts to src/infrastructure/prisma-user.repository.ts"
+    auto_fixable: true
+  - file: src/interface/http/user.controller.ts
+    rule: INTERFACE_NO_DOMAIN_ACCESS
+    severity: critical
+    layer: Interface
+    message: Controller directly imports UserRepository interface from Domain
+    suggestion: Inject CreateUserUseCase in controller constructor instead of importing IUserRepository
+    auto_fixable: true
+  - file: src/application/createUser.ts
+    rule: NAMING_CONVENTION
+    severity: medium
+    layer: Application
+    message: File does not follow expected naming pattern
+    suggestion: "Rename src/application/createUser.ts to src/application/create-user.use-case.ts"
+    auto_fixable: true
+subjective_notes:
+  - topic: business-logic-placement
+    finding: "UserController.calculateTax() contains tax calculation rules that belong in a Domain Service"
+    severity: high
+    recommendation: "Create TaxDomainService in src/domain/services/ and call it from CreateInvoiceUseCase"
+  - topic: headers
+    finding: "No LAYER header comments found in any file"
+    severity: low
+    recommendation: "Add LAYER documentation comments to every file (see SKILL.md templates)"
+  - topic: naming
+    finding: "Mixed naming styles: camelCase (createUser.ts) and kebab-case (get-user.use-case.ts) in the same layer"
+    severity: low
+    recommendation: "Standardize on kebab-case with layer suffixes for all files"
+  - topic: dto-quality
+    finding: "Application DTOs contain nested Prisma objects instead of flat primitives"
+    severity: medium
+    recommendation: "Replace Prisma model references in DTOs with flat string/number/boolean fields"
+todo_desirable:
+  - priority: P0
+    layer: Domain
+    task: Remove all external imports (Prisma, Express, etc.) from src/domain/ files
+    effort: hours
+    risk: low
+    impact: high
+  - priority: P0
+    layer: Interface
+    task: Refactor controllers to only depend on Application use cases (no direct Domain or Infra access)
+    effort: hours
+    risk: low
+    impact: high
+  - priority: P1
+    layer: Application
+    task: Rename all files to kebab-case with layer suffix (e.g., .use-case.ts, .dto.ts)
+    effort: hours
+    risk: low
+    impact: medium
+  - priority: P1
+    layer: Domain
+    task: Add behavior methods to entities (avoid anemic domain model)
+    effort: days
+    risk: low
+    impact: medium
+  - priority: P2
+    layer: All
+    task: Add LAYER header comments to every file
+    effort: hours
+    risk: none
+    impact: low
+  - priority: P2
+    layer: Application
+    task: Flatten DTOs to remove nested ORM objects
+    effort: hours
+    risk: low
+    impact: medium
+```
+
+## Schema Specification
+
+### Top-level keys
+
+| Key | Type | Required | Description |
+|---|---|---|---|
+| `project` | string | ✅ | Project name or folder name |
+| `score` | number | ✅ | Computed score 0.0 - 5.0 |
+| `max_score` | number | ✅ | Always 5 |
+| `summary` | string | ✅ | Human-readable 2-4 sentence assessment |
+| `metadata` | object | ✅ | Audit metadata |
+| `layers_detected` | array | ✅ | List of layers found in the project |
+| `violations` | array | ✅ | Machine-detectable rule breaches |
+| `subjective_notes` | array | ✅ | Agent-judged findings |
+| `todo_desirable` | array | ✅ | Prioritized action list |
+
+### metadata
+
+| Key | Type | Description |
+|---|---|---|
+| `audited_at` | ISO8601 string | Timestamp |
+| `auditor` | string | Always `skill-cd-ci-ddd-score-validation` |
+| `version` | string | Skill version |
+| `gate` | string | CI gate if configured (`strict`, `moderate`, `lenient`, `report-only`) |
+| `source_root` | string | Absolute path to detected source folder |
+| `total_files` | integer | Total source files analyzed |
+| `languages` | array | Languages detected |
+
+### layers_detected[]
+
+| Key | Type | Description |
+|---|---|---|
+| `name` | string | Canonical layer name |
+| `path` | string | Relative path from project root |
+| `file_count` | integer | Files in this layer |
+| `types` | array | Responsibility types found in this layer |
+
+### violations[]
+
+| Key | Type | Description |
+|---|---|---|
+| `file` | string | File path relative to project root |
+| `rule` | string | Rule code (see validation-rules.md) |
+| `severity` | `critical` / `high` / `medium` / `low` | Impact level |
+| `layer` | string | Layer of the offending file |
+| `message` | string | Human-readable explanation |
+| `suggestion` | string | Concrete action to fix |
+| `auto_fixable` | boolean | Can a script potentially auto-fix it |
+
+### subjective_notes[]
+
+| Key | Type | Description |
+|---|---|---|
+| `topic` | string | Category (`business-logic-placement`, `headers`, `naming`, `dto-quality`, `anemic-model`, `di`, `use-case-purity`) |
+| `finding` | string | What the agent observed |
+| `severity` | `high` / `medium` / `low` | Impact |
+| `recommendation` | string | Suggested improvement |
+
+### todo_desirable[]
+
+| Key | Type | Description |
+|---|---|---|
+| `priority` | `P0` / `P1` / `P2` | P0 = do first, P1 = next, P2 = nice to have |
+| `layer` | string | Target layer or `All` |
+| `task` | string | Action description |
+| `effort` | `minutes` / `hours` / `days` / `weeks` | Rough estimate |
+| `risk` | `none` / `low` / `medium` / `high` | Risk of making the change |
+| `impact` | `low` / `medium` / `high` | Expected improvement |
