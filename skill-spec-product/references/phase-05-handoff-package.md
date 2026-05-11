@@ -2,6 +2,9 @@
 
 ## Objective
 
+ALCANCE DE ESTA FASE: Documentar el paquete de entrega como contenido estructurado en YAML y documentos de referencia.
+Este skill NO realiza kickoffs con ingenieria, NO crea tickets en Jira/Linear, NO genera documentos fuera de `spec-product/`, y NO escribe codigo.
+
 Assemble everything engineering needs to start building — in one place, with full context. The handoff is a package, not a meeting.
 
 ## Input Required

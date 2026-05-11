@@ -3,6 +3,9 @@
 # validate-specs.sh
 # Spec Product Validator — referenced by skill-spec-product
 #
+# Este script valida estructura de carpetas y contenido YAML.
+# No compila codigo, no ejecuta tests, no realiza deploys.
+#
 # Usage:
 #   From project root: bash references/validate-specs.sh
 #   From anywhere:     bash /path/to/skill-spec-product/references/validate-specs.sh

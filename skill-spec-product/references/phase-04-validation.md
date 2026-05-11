@@ -2,6 +2,9 @@
 
 ## Objective
 
+Esta fase valida la completitud y consistencia de los archivos YAML.
+El skill NO convoca reuniones, NO obtiene firmas reales y NO interactua con herramientas de gestion de proyectos (Jira, Linear, etc.).
+
 Secure stakeholder sign-off and verify that specs are complete, consistent, and ready for engineering. This is the quality gate before handoff.
 
 ## Input Required

@@ -104,6 +104,9 @@ spec-product/
 
 All user stories MUST include Git branch, commit, and PR naming conventions for traceability.
 
+NOTA: Estas convenciones se documentan exclusivamente como metadata dentro del bloque `git:` del YAML.
+Este skill NO crea branches, NO genera commits y NO abre PRs.
+
 **Branch Naming**
 
 ```
@@ -234,6 +237,8 @@ story:
 - `spec-product/feat-0001-dd-mm-yy-hh-mm/feat-0001.yml` - Discovery summary
 - `spec-product/feat-0002-*` through `feat-0004-*` - Per problem, request, and improvement
 - Stakeholder map documented
+
+Toda la salida de esta fase son archivos YAML creados dentro de `spec-product/`. Este skill no realiza acciones de Git.
 
 ---
 

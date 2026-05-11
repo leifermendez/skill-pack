@@ -1,10 +1,9 @@
 ---
 name: skill-spec-product
 description: >-
-  Product Spec-Driven Delivery framework. A requirements-first workflow where
-  YAML user stories are the single source of truth for product teams.
-  Guides product managers from raw intake to a validated handoff package
-  ready for engineering execution.
+  Generador de especificaciones de producto en YAML. Unico proposito: crear,
+  estructurar y validar archivos .yml de historias de usuario. No edita codigo
+  fuente.
 compatibility: Framework agnostic. Works with any tech stack or team structure.
 metadata:
   author: leifermendez
@@ -14,9 +13,12 @@ metadata:
 
 # skill-spec-product
 
+PROPOSITO UNICO DE ESTE SKILL: Crear, generar y validar archivos YAML de especificacion de producto.
+Este skill NO edita, modifica, compila ni genera codigo fuente. Su unico entregable son archivos .yml.
+
 Product Spec-Driven Delivery is a requirements-first workflow where YAML user stories are the single source of truth for product teams. Every feature request traces back to a spec. Every acceptance criterion is verifiable. Every handoff to engineering is complete.
 
-This skill guides product teams through a 5-phase process from raw intake to a validated handoff package.
+This skill guides product teams through a 5-phase process from raw intake to a validated handoff package. The output of every phase is a set of structured YAML files.
 
 ---
 
@@ -144,13 +146,14 @@ After Phase 05 complete:
 
 ## Core Principles
 
-1. **Specs are the contract** - YAML user stories are the agreement between product and engineering.
-2. **Traceability** - Every spec has an ID that follows the feature through design, development, and release.
-3. **Acceptance criteria are non-negotiable** - If it cannot be verified, it is not a criterion.
-4. **Start with the problem, not the solution** - Specs must articulate the user need before proposing features.
-5. **Decisions are documented** - Priority changes, scope cuts, and trade-offs are recorded.
-6. **Handoff is a package, not a meeting** - Engineering receives complete context, not a bullet list.
+1. **Este skill genera specs en YAML** - No implementa features, no escribe codigo, no crea branches ni hace deploys. Su unico output son archivos .yml.
+2. **Specs are the contract** - YAML user stories are the agreement between product and engineering.
+3. **Traceability** - Every spec has an ID that follows the feature through design, development, and release.
+4. **Acceptance criteria are non-negotiable** - If it cannot be verified, it is not a criterion.
+5. **Start with the problem, not the solution** - Specs must articulate the user need before proposing features.
+6. **Decisions are documented** - Priority changes, scope cuts, and trade-offs are recorded.
+7. **Handoff is a package, not a meeting** - Engineering receives complete context, not a bullet list.
 
 ---
 
-**Build specs that engineering can execute without asking "what did you mean?"**
+**Build YAML specs that serve as the unambiguous contract between product and engineering.**

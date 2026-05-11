@@ -2,6 +2,9 @@
 
 ## Objective
 
+PROPOSITO DE ESTA FASE: Completar los campos del archivo YAML (acceptance criteria, product metadata, technical context, business value).
+No escribir codigo de implementacion, no crear mocks funcionales, no generar scripts.
+
 Produce detailed, unambiguous user stories that engineering can execute without asking clarifying questions. The spec is the contract.
 
 ## Input Required

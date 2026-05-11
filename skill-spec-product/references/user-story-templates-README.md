@@ -2,6 +2,10 @@
 
 ## Overview
 
+RECORDATORIO: Este skill genera los archivos YAML listados en este documento.
+No crea tickets de ingenieria, no genera commits, no hace releases, no escribe codigo.
+
+
 These templates provide standardized YAML structures for documenting user stories in product specification projects.
 
 Each user story YAML file captures:
@@ -176,7 +180,7 @@ story:
 
 ## Traceability
 
-From user story to delivery:
+From user story to delivery (mapeo de metadatos dentro del spec, no accion del agente):
 
 ```
 spec-product/feat-0002-dd-mm-yy-hh-mm/feat-0002.yml
