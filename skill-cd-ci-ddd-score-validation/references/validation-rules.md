@@ -34,11 +34,14 @@ All scripts are 100% bash and produce YAML output to stdout.
 | Application | `application`, `app`, `applications`, `services`, `service` |
 | UseCases | `usecases`, `use-cases`, `use_cases`, `uc`, `interactors`, `features` |
 | Infrastructure | `infrastructure`, `infra`, `infrastructures`, `adapter`, `adapters`, `persistence`, `db`, `data`, `external` |
-| Interface | `interface`, `interfaces`, `presentation`, `presenters`, `controllers`, `api`, `http`, `rest`, `web`, `ui`, `cli`, `view`, `views` |
+| Interface | `interface`, `interfaces`, `presenters`, `controllers`, `api`, `http`, `rest`, `web`, `cli` |
+| Presentation | `presentation`, `presentations`, `ui`, `view`, `views` |
 
 ### Ambiguity resolution
 - If both `app/` (Application) and `app/` (top-level Next.js) exist, use deepest nested one that contains subfolders matching other layer names.
 - `src/app/` in Next.js is **Interface**, not Application, unless it contains `use-cases/` or `domain/` subfolders.
+- `presentation/`, `ui/`, `views/` are mapped to canonical layer **Presentation** (role: Interface).
+- `@services/` is **not** a standard Clean Architecture layer. Default classification: **Infrastructure** (concrete external adapters). Reclassify to **Application** only if it contains pure orchestration services.
 
 ---
 

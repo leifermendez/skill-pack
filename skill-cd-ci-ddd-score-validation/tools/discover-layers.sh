@@ -49,8 +49,11 @@ detect_layer() {
     infrastructure|infra|infrastructures|adapter|adapters|persistence|persistences|db|database|databases|external|externals|data)
       echo "Infrastructure"
       ;;
-    interface|interfaces|presentation|presentations|presenter|presenters|controller|controllers|api|apis|http|rest|web|ui|cli|view|views|route|routes|router|routers|handler|handlers|middleware|middlewares|interceptor|interceptors|guard|guards)
+    interface|interfaces|presenter|presenters|controller|controllers|api|apis|http|rest|web|cli|route|routes|router|routers|handler|handlers|middleware|middlewares|interceptor|interceptors|guard|guards)
       echo "Interface"
+      ;;
+    presentation|presentations|@presentation|@presentations|ui|view|views)
+      echo "Presentation"
       ;;
     ports|port)
       echo "Application"

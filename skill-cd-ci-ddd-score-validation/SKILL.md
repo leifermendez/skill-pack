@@ -94,7 +94,12 @@ candidates:
     file_count: 12
     languages:
       - typescript
-selected_reason: highest file count
+selected: src
+selected_reason: highest file count (142)
+frameworks_detected:
+  - qwik
+  - prisma
+  - authjs
 ```
 
 ### 4.2 discover-layers.sh
@@ -114,10 +119,12 @@ layers_detected:
   - name: Infrastructure
     path: src/infrastructure
     file_count: 6
-  - name: Interface
-    path: src/interface
-    file_count: 4
+  - name: Presentation
+    path: src/@presentation
+    canonical_role: Interface
+    file_count: 991
 ```
+**Note:** `presentation/`, `ui/`, `views/` are canonicalized as `Presentation` with `canonical_role: Interface`. `@services/` is not a standard layer; it defaults to `Infrastructure`.
 
 ### 4.3 classify-files.sh
 ```bash
@@ -149,9 +156,17 @@ imports:
   - source_file: src/application/use-cases/create-user.use-case.ts
     imported_path: ../../domain/entities/user.entity
     is_relative: true
+    is_type_only: false
     import_line: "import { User } from '../../domain/entities/user.entity';"
     language: typescript
+  - source_file: src/presentation/store/billing.ts
+    imported_path: ../../domain/entities/BillingInformation
+    is_relative: true
+    is_type_only: true
+    import_line: "import type { BillingInformationDTO } from '../../domain/entities/BillingInformation';"
+    language: typescript
 ```
+**Note:** `is_type_only: true` indicates a compile-time-only import. The agent should treat these as lower severity than concrete imports.
 
 ### 4.5 validate-dependencies.sh
 ```bash
@@ -212,14 +227,20 @@ Rules validated automatically by scripts or enforced by the agent:
 | Rule | Layer | Requirement |
 |---|---|---|
 | `DOMAIN_NO_EXTERNAL_DEPS` | Domain | Zero external dependencies. No frameworks, no DB, no imports from outer layers. |
+| `DOMAIN_TYPE_IMPORT_INFRA` | Domain | `import type` from Infrastructure into Domain. Compile-time only. Low severity. |
 | `APPLICATION_ONLY_DOMAIN` | Application | May only import from Domain. No frameworks, no direct DB access. |
+| `APPLICATION_TYPE_IMPORT_INFRA` | Application | `import type` from Infrastructure into Application. Medium severity. |
 | `USECASES_ONLY_INNER` | UseCases | May only import Domain and/or Application. |
 | `INFRASTRUCTURE_NO_INTERFACE` | Infrastructure | Must not import from Interface. May import Domain and Application. |
 | `INTERFACE_ONLY_APPLICATION` | Interface | May only import from Application. No direct Domain or Infrastructure access. |
+| `INTERFACE_TYPE_IMPORT_DOMAIN` | Interface/Presentation | `import type` from Domain into Interface. Compile-time only. Low severity. |
+| `INTERFACE_TYPE_IMPORT_INFRA` | Interface/Presentation | `import type` from Infrastructure into Interface. Compile-time only. Low severity. |
 | `NO_CIRCULAR_DEPENDENCIES` | All | No cycle between layers. |
 | `REPOSITORY_INTERFACE_IN_DOMAIN` | Domain | Repository interfaces (ports) must live in Domain. |
 | `REPOSITORY_IMPL_IN_INFRA` | Infrastructure | Repository implementations must live in Infrastructure. |
-| `NAMING_CONVENTION` | All | Files should follow layer-specific naming patterns (kebab-case preferred). |
+| `FILE_NAMING_MISMATCH` | All | File name does not follow layer-specific naming pattern. |
+| `GOD_USE_CASE` | Application | Use case exceeds 200 lines or has >5 dependencies. |
+| `MISSING_LAYER_HEADER` | All | File lacks `LAYER:` documentation comment at top. |
 | `ONE_RESPONSIBILITY_PER_FILE` | All | One class / interface / function per file. |
 
 ## 6. Subjective Criteria (Agent Evaluation)

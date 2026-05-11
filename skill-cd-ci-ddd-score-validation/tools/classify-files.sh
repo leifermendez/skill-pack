@@ -53,7 +53,14 @@ get_layer_from_path() {
     */infrastructure/*|*/infra/*|*/infrastructures/*|*/adapter/*|*/adapters/*|*/persistence/*|*/persistences/*|*/db/*|*/database/*|*/databases/*|*/external/*|*/externals/*|*/data/*)
       echo "Infrastructure"
       ;;
-    */interface/*|*/interfaces/*|*/presentation/*|*/presentations/*|*/presenter/*|*/presenters/*|*/controller/*|*/controllers/*|*/api/*|*/apis/*|*/http/*|*/rest/*|*/web/*|*/ui/*|*/cli/*|*/view/*|*/views/*|*/route/*|*/routes/*|*/router/*|*/routers/*|*/handler/*|*/handlers/*|*/middleware/*|*/middlewares/*|*/interceptor/*|*/interceptors/*|*/guard/*|*/guards/*)
+    */services/*|*/service/*|*/@services/*|*/@service/*|services/*|service/*|@services/*|@service/*)
+      # @services is not a standard Clean Architecture layer.
+      # Heuristic: if it contains concrete external adapters (Mail, Stripe, HTTP), classify as Infrastructure.
+      # If it contains orchestration logic (FindUserService, ProcessOrderService), classify as Application.
+      # Default to Infrastructure because most @services are concrete implementations.
+      echo "Infrastructure"
+      ;;
+    */interface/*|*/interfaces/*|*/presentation/*|*/presentations/*|*/presenter/*|*/presenters/*|*/controller/*|*/controllers/*|*/api/*|*/apis/*|*/http/*|*/rest/*|*/web/*|*/ui/*|*/cli/*|*/view/*|*/views/*|*/route/*|*/routes/*|*/router/*|*/routers/*|*/handler/*|*/handlers/*|*/middleware/*|*/middlewares/*|*/interceptor/*|*/interceptors/*|*/guard/*|*/guards/*|interface/*|interfaces/*|presentation/*|presentations/*|controller/*|controllers/*|api/*|apis/*|http/*|rest/*|web/*|ui/*|cli/*|view/*|views/*|route/*|routes/*|router/*|routers/*|handler/*|handlers/*|middleware/*|middlewares/*|interceptor/*|interceptors/*|guard/*|guards/*)
       echo "Interface"
       ;;
     *)

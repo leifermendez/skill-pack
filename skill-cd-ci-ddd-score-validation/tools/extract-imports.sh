@@ -75,10 +75,15 @@ while IFS= read -r line; do
           if echo "$imported" | grep -qE "^\./|^\.\./"; then
             is_relative="true"
           fi
+          is_type_only="false"
+          if echo "$rawline" | grep -qE "import\s+type\s+"; then
+            is_type_only="true"
+          fi
           line_clean=$(echo "$rawline" | sed 's/"/\\"/g')
           echo "  - source_file: $file"
           echo "    imported_path: $imported"
           echo "    is_relative: $is_relative"
+          echo "    is_type_only: $is_type_only"
           echo "    import_line: \"$line_clean\""
           echo "    language: typescript"
         fi

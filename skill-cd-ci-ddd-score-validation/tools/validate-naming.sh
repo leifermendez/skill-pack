@@ -129,6 +129,12 @@ while IFS= read -r line; do
         severity="medium"
         [ -n "$style_issue" ] && severity="low"
 
+        # Determine unique rule code
+        rule="FILE_NAMING_MISMATCH"
+        if [ -n "$style_issue" ]; then
+          rule="FILE_NAMING_MISMATCH"
+        fi
+
         msg=""
         if [ "$issue" = "true" ]; then
           msg="Expected pattern $expected but got $base"
@@ -140,6 +146,7 @@ while IFS= read -r line; do
         echo "  - file: $path"
         echo "    layer: $layer"
         echo "    type: $type"
+        echo "    rule: $rule"
         echo "    expected_pattern: \"$expected\""
         echo "    actual: $base"
         echo "    severity: $severity"

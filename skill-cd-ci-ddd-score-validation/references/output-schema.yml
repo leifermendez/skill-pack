@@ -24,6 +24,9 @@ metadata:
   languages:
     - typescript
     - javascript
+  frameworks_detected:
+    - qwik
+    - prisma
 layers_detected:
   - name: Domain
     path: src/domain
@@ -59,6 +62,14 @@ violations:
     message: Domain entity imports PrismaClient from Infrastructure
     suggestion: "Move 'import { PrismaClient }' from src/domain/entities/user.entity.ts to src/infrastructure/prisma-user.repository.ts"
     auto_fixable: true
+  - file: src/presentation/store/billing.ts
+    rule: INTERFACE_TYPE_IMPORT_DOMAIN
+    severity: low
+    layer: Presentation
+    is_type_only: true
+    message: Presentation imports type-only from Domain (compile-time coupling, no runtime leak)
+    suggestion: "Prefer importing Application DTOs instead of Domain entities in Presentation."
+    auto_fixable: false
   - file: src/interface/http/user.controller.ts
     rule: INTERFACE_NO_DOMAIN_ACCESS
     severity: critical

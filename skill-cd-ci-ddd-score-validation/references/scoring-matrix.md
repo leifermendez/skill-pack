@@ -26,6 +26,13 @@ The agent computes the final score using this rubric.
 | Repository interface NOT in Domain | -0.5 | Port belongs inside |
 | Repository implementation in Domain | -1.0 | Implementation leaks into core |
 | Missing LAYER headers in >50% files | -0.5 | Documentation hygiene |
+| **Type-only imports (deductions are additive to concrete import rules above)** |||
+| Domain `import type` from Infrastructure / Interface / Application | -0.3 | Compile-time only. No runtime leak. Minor conceptual coupling. |
+| Interface `import type` from Domain / Infrastructure | -0.3 | Compile-time only. Acceptable if DTOs are flat. |
+| Application `import type` from Infrastructure | -0.5 | Application should define its own DTOs. Slightly more concerning. |
+| God Use Case (>200 lines or >5 dependencies) | -0.5 | Violates single responsibility per file. |
+| FILE_NAMING_MISMATCH | -0.2 | Inconsistent naming within a layer. |
+| MISSING_LAYER_HEADER | -0.1 | Per file missing header. Cap at -0.5 for >50% files. |
 
 ### Hard Score Subtotal
 ```
