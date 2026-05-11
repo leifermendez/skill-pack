@@ -13,41 +13,38 @@ Each user story YAML file captures:
 - **Technical details** (complexity, effort, risks)
 - **Business value** (priority, KPIs, revenue impact)
 
-## File Naming Convention
+## Spec Folder & File Naming Convention
 
-```
-spec-product/feat-XXX-descriptive-name.yml
+**Folder Format:** `spec-product/feat-XXXX-dd-mm-yy-hh-mm/`
 
-Examples:
-- feat-001-discovery.yml
-- feat-002-user-registration.yml
-- feat-003-manual-invoicing.yml
-- feat-004-payment-gateway.yml
-```
+- `XXXX`: Sequential 4-digit number (0001, 0002, ...). No gaps allowed.
+- `dd-mm-yy-hh-mm`: Creation timestamp. 2-digit year.
+- Example: `spec-product/feat-0001-15-05-26-14-30/`
 
-**Rules:**
-- Sequential numbering: `feat-001`, `feat-002`, etc.
-- Kebab-case for descriptive part
-- Maximum 50 characters total
-- Must be unique within project
+**File Format (inside folder):** `feat-XXXX.yml`
+
+- Only the ID. No timestamp, no descriptive slug.
+- One file per folder. No additional files.
+- Example: `spec-product/feat-0001-15-05-26-14-30/feat-0001.yml`
 
 ## Story Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `discovery` | Summary of discovery phase | feat-001-discovery.yml |
-| `feature` | Functional feature | feat-002-user-registration.yml |
-| `technical` | Technical requirement/infrastructure | feat-005-database-sharding.yml |
-| `pain` | Business pain point solution | feat-003-manual-invoicing.yml |
-| `improvement` | Enhancement or optimization | feat-006-checkout-speed.yml |
-| `use-case` | Specific use case or scenario | feat-007-cancel-order.yml |
+| Type | Description | Example Folder |
+|------|-------------|----------------|
+| `discovery` | Summary of discovery phase | `feat-0001-dd-mm-yy-hh-mm/` |
+| `feature` | Functional feature | `feat-0002-dd-mm-yy-hh-mm/` |
+| `technical` | Technical requirement/infrastructure | `feat-0005-dd-mm-yy-hh-mm/` |
+| `pain` | Business pain point solution | `feat-0003-dd-mm-yy-hh-mm/` |
+| `improvement` | Enhancement or optimization | `feat-0006-dd-mm-yy-hh-mm/` |
+| `use-case` | Specific use case or scenario | `feat-0007-dd-mm-yy-hh-mm/` |
 
 ## Template Structure
 
 ```yaml
+# spec-product/feat-XXXX-dd-mm-yy-hh-mm/feat-XXXX.yml
 story:
   # Identification
-  id: "feat-XXX"
+  id: "feat-XXXX"
   type: "feature|technical|pain|improvement|use-case|discovery"
   status: "draft|refined|ready|in-review|approved|done"
 
@@ -97,7 +94,7 @@ story:
 
   # Dependencies
   dependencies:
-    stories: ["feat-001", "feat-002"]
+    stories: ["feat-0001", "feat-0002"]
     systems: ["[External system]"]
     teams: ["[Team name]"]
 
@@ -107,8 +104,8 @@ story:
 
   # Metadata
   metadata:
-    created_at: "YYYY-MM-DD"
-    updated_at: "YYYY-MM-DD"
+    created_at: "dd-mm-yy-hh-mm"
+    updated_at: "dd-mm-yy-hh-mm"
     author: "[name]"
     source: "discovery|stakeholder|analysis"
 ```
@@ -130,13 +127,14 @@ story:
 ## Example Files
 
 ### 1. Discovery Summary
-**File:** `feat-001-discovery.yml`
+**Folder:** `spec-product/feat-0001-dd-mm-yy-hh-mm/`
+**File:** `feat-0001.yml`
 
 Use this as the first story to document discovery phase completion.
 
 ```yaml
 story:
-  id: "feat-001"
+  id: "feat-0001"
   type: "discovery"
   status: "done"
   as_a: "Product Manager"
@@ -145,13 +143,14 @@ story:
 ```
 
 ### 2. Feature
-**File:** `feat-002-user-registration.yml`
+**Folder:** `spec-product/feat-0002-dd-mm-yy-hh-mm/`
+**File:** `feat-0002.yml`
 
 Functional feature from the requirements collection.
 
 ```yaml
 story:
-  id: "feat-002"
+  id: "feat-0002"
   type: "feature"
   status: "refined"
   as_a: "New Customer"
@@ -160,13 +159,14 @@ story:
 ```
 
 ### 3. Pain Point
-**File:** `feat-003-manual-invoicing.yml`
+**Folder:** `spec-product/feat-0003-dd-mm-yy-hh-mm/`
+**File:** `feat-0003.yml`
 
 Solution to a documented business pain point.
 
 ```yaml
 story:
-  id: "feat-003"
+  id: "feat-0003"
   type: "pain"
   status: "draft"
   as_a: "Finance Team Member"
@@ -179,7 +179,7 @@ story:
 From user story to delivery:
 
 ```
-spec-product/feat-002-user-registration.yml
+spec-product/feat-0002-dd-mm-yy-hh-mm/feat-0002.yml
     ↓
 Feature Area: Identity & Access
     ↓
@@ -196,17 +196,17 @@ Release: v2.3.0
 
 ## Workflow
 
-1. **Discovery Phase**: Create `feat-001-discovery.yml` with summary
-2. **Per Feature**: Create `feat-002-[feature-name].yml` for each feature
-3. **Per Pain Point**: Create `feat-00X-[pain-name].yml` for each pain point
-4. **Per Improvement**: Create `feat-0XX-[improvement-name].yml` for optimizations
+1. **Discovery Phase**: Create `spec-product/feat-0001-dd-mm-yy-hh-mm/feat-0001.yml`
+2. **Per Feature**: Create `spec-product/feat-0002-dd-mm-yy-hh-mm/feat-0002.yml` for each feature
+3. **Per Pain Point**: Create `spec-product/feat-0003-dd-mm-yy-hh-mm/feat-0003.yml` for each pain point
+4. **Per Improvement**: Create `spec-product/feat-0006-dd-mm-yy-hh-mm/feat-0006.yml` for optimizations
 5. **Handoff**: Reference story ID in engineering tickets, commits, PRs
 
 ## Validation Checklist
 
 Before marking a user story as "ready":
 
-- [ ] ID follows convention (feat-XXX)
+- [ ] ID follows convention (feat-XXXX)
 - [ ] Type is valid (discovery/feature/technical/pain/improvement/use-case)
 - [ ] As a / I want / So that complete
 - [ ] Description provided
@@ -216,21 +216,24 @@ Before marking a user story as "ready":
 - [ ] Technical complexity estimated
 - [ ] Business priority assigned (P0-P3)
 - [ ] Dependencies identified
-- [ ] Metadata filled (created_at, author, source)
+- [ ] Metadata filled (created_at, updated_at, author, source)
+- [ ] Folder name follows `feat-XXXX-dd-mm-yy-hh-mm/` format
+- [ ] File inside folder is `feat-XXXX.yml`
+- [ ] `metadata.created_at` matches folder timestamp
 
 ## Example Directory Structure
 
 ```
 project/
 ├── spec-product/
-│   ├── feat-001-discovery.yml
-│   ├── feat-002-user-registration.yml
-│   ├── feat-003-user-authentication.yml
-│   ├── feat-004-password-reset.yml
-│   ├── feat-005-manual-invoicing.yml
-│   ├── feat-006-order-management.yml
-│   ├── feat-007-inventory-tracking.yml
-│   └── feat-008-payment-processing.yml
+│   ├── feat-0001-15-05-26-14-30/
+│   │   └── feat-0001.yml
+│   ├── feat-0002-15-05-26-16-45/
+│   │   └── feat-0002.yml
+│   ├── feat-0003-15-05-26-18-00/
+│   │   └── feat-0003.yml
+│   └── feat-0004-16-05-26-09-15/
+│       └── feat-0004.yml
 ├── design/
 │   └── [mockups, flows]
 └── README.md
@@ -241,7 +244,7 @@ project/
 ### YAML Validation
 Use any YAML validator to ensure syntax correctness:
 - Online: yamllint.com
-- CLI: `yamllint spec-product/*.yml`
+- CLI: `yamllint spec-product/*/*.yml`
 - VSCode: YAML extension with schema validation
 
 ### Schema Validation

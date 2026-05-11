@@ -6,7 +6,7 @@ Produce detailed, unambiguous user stories that engineering can execute without 
 
 ## Input Required
 
-- Prioritized YAML files from `spec-product/`
+- Prioritized spec folders from `spec-product/`
 - Quarter roadmap from Phase 02
 - Any existing design assets, flows, or research
 
@@ -115,6 +115,7 @@ Step 5: [Outcome — how does the user know it worked?]
 - `business:` priorities and KPIs confirmed
 - User flows for complex features
 - Edge cases and unhappy paths documented
+- All `spec-product/feat-*/` folders verified: naming convention intact, one file per folder
 
 ---
 
@@ -129,6 +130,9 @@ Step 5: [Outcome — how does the user know it worked?]
 - [ ] `business.priority` confirmed and aligned with roadmap
 - [ ] Dependencies documented and verified
 - [ ] Story status updated to `ready` or `in-review`
+- [ ] `metadata.updated_at` timestamp updated on modified specs
+- [ ] All spec folders follow naming convention: `feat-XXXX-dd-mm-yy-hh-mm/`
+- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
 
 ---
 
@@ -139,3 +143,9 @@ If an acceptance criterion is ambiguous:
 2. Words like "fast", "easy", "user-friendly", "robust" are red flags.
 3. Replace with numbers, states, or binary yes/no conditions.
 4. Re-verify the Exit Criteria checklist.
+
+If a spec folder naming convention is violated:
+1. Rename the folder to `feat-XXXX-dd-mm-yy-hh-mm/` format.
+2. Rename the file inside to `feat-XXXX.yml`.
+3. Update any cross-references.
+4. Re-verify before proceeding.

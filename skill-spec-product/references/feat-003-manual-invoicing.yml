@@ -1,9 +1,9 @@
-# spec-product/feat-003-manual-invoicing.yml
+# spec-product/feat-0003-dd-mm-yy-hh-mm/feat-0003.yml
 # Template: Pain Point - Manual Process Automation
 # Example of converting a business pain point to user story
 
 story:
-  id: "feat-003"
+  id: "feat-0003"
   type: "pain"
   status: "draft"
 
@@ -82,8 +82,8 @@ story:
 
   dependencies:
     stories:
-      - "feat-001"
-      - "feat-002-order-management"
+      - "feat-0001"
+      - "feat-0002"
     systems:
       - "Order Management System"
       - "Email Service"
@@ -102,7 +102,7 @@ story:
     - "Integration with accounting system (QuickBooks/Xero) needed in Phase 2"
 
   metadata:
-    created_at: "YYYY-MM-DD"
-    updated_at: "YYYY-MM-DD"
+    created_at: "dd-mm-yy-hh-mm"
+    updated_at: "dd-mm-yy-hh-mm"
     author: "System"
     source: "discovery"

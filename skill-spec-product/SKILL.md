@@ -8,7 +8,7 @@ description: >-
 compatibility: Framework agnostic. Works with any tech stack or team structure.
 metadata:
   author: leifermendez
-  version: "3.0.0"
+  version: "4.0.0"
   tags: "product, spec-driven, user-stories, requirements, product-management, delivery, handoff"
 ---
 
@@ -24,7 +24,7 @@ This skill guides product teams through a 5-phase process from raw intake to a v
 
 | Phase | Name | Tracker / Milestone | Deliverable |
 |---|---|---|---|
-| **01** | Discovery & Intake | Requirements Package Complete | User Story YAMLs, Stakeholder Map |
+| **01** | Discovery & Intake | Requirements Package Complete | Spec folders in `spec-product/`, Stakeholder Map |
 | **02** | Prioritization | Roadmap Defined | Prioritized backlog (RICE/WSJF), Quarter roadmap |
 | **03** | Specification | Specs Ready for Review | Detailed user stories with acceptance criteria, flows, metrics |
 | **04** | Validation | Stakeholder Sign-Off | Approved specs, risk assessment, go/no-go decision |
@@ -34,11 +34,88 @@ This skill guides product teams through a 5-phase process from raw intake to a v
 
 ---
 
+## Pre-flight Check
+
+Before starting any phase, run the spec validator and inspect the project root:
+
+```bash
+bash references/validate-specs.sh
+```
+
+1. The validator checks if `spec-product/` exists and creates it if missing.
+2. If it exists:
+   - Lists all subdirectories: `feat-XXXX-dd-mm-yy-hh-mm/`
+   - Identifies the most recent by directory name timestamp
+   - Reads the `feat-XXXX.yml` inside the most recent folder for context
+   - Records the highest sequential ID to continue numbering from there
+3. Validate: no gaps in ID sequence unless explicitly documented.
+
+---
+
+## Spec Folder & File Naming Convention
+
+**Folder Format:** `spec-product/feat-XXXX-dd-mm-yy-hh-mm/`
+
+- `XXXX`: Sequential 4-digit number (0001, 0002, ...). No gaps allowed.
+- `dd-mm-yy-hh-mm`: Creation timestamp. 2-digit year.
+- Example: `spec-product/feat-0001-15-05-26-14-30/`
+
+**File Format (inside folder):** `feat-XXXX.yml`
+
+- Only the ID. No timestamp, no descriptive slug.
+- One file per folder. No additional files.
+- Example: `spec-product/feat-0001-15-05-26-14-30/feat-0001.yml`
+
+---
+
+## Post-phase Verification
+
+After completing any phase, run the spec validator:
+
+```bash
+bash references/validate-specs.sh
+```
+
+Then verify manually:
+
+1. List all `spec-product/feat-*/` directories created in this phase.
+2. For each directory, verify:
+   - [ ] Directory name follows `feat-XXXX-dd-mm-yy-hh-mm/` format
+   - [ ] Directory contains exactly one file: `feat-XXXX.yml`
+   - [ ] YAML file is valid and non-empty
+   - [ ] YAML has required fields: id, type, as_a, i_want, so_that, product, metadata.created_at
+   - [ ] `metadata.created_at` matches the directory timestamp (dd-mm-yy-hh-mm)
+   - [ ] ID in YAML matches ID in directory name
+3. If any check fails:
+   - Do NOT proceed to the next phase
+   - Report the exact failure
+   - Fix before continuing
+
+---
+
+## Final Verification
+
+After Phase 05 complete:
+
+1. Inventory all `spec-product/feat-*/` directories.
+2. Verify no orphaned IDs (gaps in sequence without documented reason).
+3. Verify all P0/P1 stories have status `approved` or `done`.
+4. Verify timestamps in directory names are chronologically ordered by ID.
+5. Emit summary:
+   - Total specs created
+   - P0 count / P1 count / P2+P3 count
+   - Timestamp range (first → last)
+   - Coverage % of acceptance criteria
+
+---
+
 ## Quick Start
 
-1. Load `references/phase-01-discovery-and-intake.md` and collect requirements.
-2. When `Exit Criteria` pass, load `references/phase-02-prioritization.md`.
-3. Continue sequentially through all 5 phases.
+1. Run **Pre-flight Check** above.
+2. Load `references/phase-01-discovery-and-intake.md` and collect requirements.
+3. When `Exit Criteria` pass, run **Post-phase Verification**, then load `references/phase-02-prioritization.md`.
+4. Continue sequentially through all 5 phases, running **Post-phase Verification** after each.
+5. After Phase 05, run **Final Verification**.
 
 ---
 
@@ -57,6 +134,7 @@ This skill guides product teams through a 5-phase process from raw intake to a v
 - [Risk Matrix](references/risk-matrix.md) - Risk identification & mitigation
 - [Tools](references/tools.md) - Recommended software per phase
 - [Books](references/books.md) - Essential reading for product managers
+- [Spec Validator](references/validate-specs.sh) - Bash script to validate `spec-product/` structure and YAML contents
 - [User Story Templates README](references/user-story-templates-README.md) - YAML schema & examples
   - [Discovery Template](references/feat-001-discovery.yml)
   - [Feature Template](references/feat-002-user-registration.yml)

@@ -6,7 +6,7 @@ Assemble everything engineering needs to start building — in one place, with f
 
 ## Input Required
 
-- Validated, `approved` YAML files from `spec-product/`
+- Validated, `approved` spec folders from `spec-product/`
 - Review checklists and risk register from Phase 04
 - Quarter roadmap
 
@@ -30,19 +30,19 @@ Date: [YYYY-MM-DD]
 
 STORIES INCLUDED
 
-| ID      | Title                 | Priority | Complexity | Status    │
-|---------|-----------------------|----------|------------|-----------|
-| feat-002│ [Title]               │ P0       │ Medium     │ Approved  │
-| feat-003│ [Title]               │ P0       │ High       │ Approved  │
-| feat-005│ [Title]               │ P1       │ Low        │ Approved  │
+| ID         | Title                 | Priority | Complexity | Status    │
+|------------|-----------------------|----------|------------|-----------|
+| feat-0002  │ [Title]               │ P0       │ Medium     │ Approved  │
+| feat-0003  │ [Title]               │ P0       │ High       │ Approved  │
+| feat-0005  │ [Title]               │ P1       │ Low        │ Approved  │
 
 ---
 
 DEPENDENCIES
 
-| Story │ Depends On │ Scheduled │ Risk │
-|-------|------------|-----------|------|
-| ...   │ ...        │ ...       │ ...  │
+| Story     │ Depends On │ Scheduled │ Risk │
+|-----------|------------|-----------|------|
+| ...       │ ...        │ ...       │ ...  │
 
 ---
 
@@ -105,9 +105,9 @@ Ensure every spec can be tracked from handoff to release.
 ```
 TRACEABILITY MATRIX
 
-Story ID │ Handoff Date │ Eng Ticket │ Design Ticket │ QA Ticket │ Release │ Status
-─────────┼──────────────┼────────────┼───────────────┼───────────┼─────────┼────────
-feat-002 │ 2024-02-01   │ PROJ-123   │ DES-456       │ QA-789    │ v2.3.0  │ Done
+Story ID     │ Handoff Date │ Eng Ticket │ Design Ticket │ QA Ticket │ Release │ Status
+─────────────┼──────────────┼────────────┼───────────────┼───────────┼─────────┼────────
+feat-0002    │ 2024-02-01   │ PROJ-123   │ DES-456       │ QA-789    │ v2.3.0  │ Done
 ```
 
 ### Step 5.4: Kickoff Briefing
@@ -151,6 +151,7 @@ KICKOFF AGENDA (30-45 minutes)
 - Traceability matrix
 - Kickoff session completed
 - Updated spec statuses (if any gaps were found during kickoff)
+- All `spec-product/feat-*/` folders verified: naming convention intact, one file per folder, timestamps match
 
 ---
 
@@ -163,6 +164,9 @@ KICKOFF AGENDA (30-45 minutes)
 - [ ] No open questions remain that block engineering start
 - [ ] Story statuses updated to `done` (from a product perspective)
 - [ ] Engineering has confirmed they have everything needed to begin
+- [ ] All spec folders follow naming convention: `feat-XXXX-dd-mm-yy-hh-mm/`
+- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
+- [ ] `metadata.updated_at` timestamp updated on modified specs
 
 ---
 
@@ -173,3 +177,9 @@ If engineering identifies a blocker during kickoff:
 2. Document the blocker and whether it requires spec changes, design changes, or architectural discussion.
 3. Update the relevant YAML or context document.
 4. Re-convene only when the blocker is resolved.
+
+If a spec folder naming convention is violated:
+1. Rename the folder to `feat-XXXX-dd-mm-yy-hh-mm/` format.
+2. Rename the file inside to `feat-XXXX.yml`.
+3. Update any cross-references.
+4. Re-verify before proceeding.

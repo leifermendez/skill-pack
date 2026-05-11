@@ -76,24 +76,29 @@ Delivery Partners: [Design, engineering, data, marketing]
 
 ---
 
-### Step 1.3: User Stories Generation
+### Step 1.3: Spec Folder Generation
 
-After collecting requirements, immediately create user story specifications.
+After collecting requirements, immediately create spec folders.
 
-#### File Naming Convention
+#### Folder Naming Convention
 
 ```
 spec-product/
-├── feat-001-discovery.yml          # Summary of discovery phase
-├── feat-002-problem-[name].yml     # Per problem statement (min 3)
-├── feat-003-request-[name].yml     # Per explicit request (min 3)
-└── feat-004-improvement-[name].yml # Per identified improvement
+└── feat-0001-dd-mm-yy-hh-mm/
+    └── feat-0001.yml          # Discovery summary
+└── feat-0002-dd-mm-yy-hh-mm/
+    └── feat-0002.yml          # Per problem statement (min 3)
+└── feat-0003-dd-mm-yy-hh-mm/
+    └── feat-0003.yml          # Per explicit request (min 3)
+└── feat-0004-dd-mm-yy-hh-mm/
+    └── feat-0004.yml          # Per identified improvement
 ```
 
 **Rules:**
-- Use sequential numbering: `feat-001`, `feat-002`, etc.
-- Use kebab-case for descriptive names.
-- Maximum 50 characters in filename.
+- Use sequential 4-digit numbering: `feat-0001`, `feat-0002`, etc. No gaps.
+- Folder name includes timestamp: `feat-XXXX-dd-mm-yy-hh-mm/`
+- File inside folder: `feat-XXXX.yml` (no timestamp, no slug)
+- One file per folder. No additional files.
 
 #### Git Naming Conventions
 
@@ -102,12 +107,12 @@ All user stories MUST include Git branch, commit, and PR naming conventions for 
 **Branch Naming**
 
 ```
-Format:    <type>/feat-<XXX>-<short-description>
+Format:    <type>/feat-<XXXX>-<short-description>
 
 Examples:
-  feat/feat-002-user-registration
-  fix/feat-002-email-verification-bug
-  refactor/feat-006-order-aggregate
+  feat/feat-0002-user-reg
+  fix/feat-0002-email-verify-bug
+  refactor/feat-0006-order-flow
 
 Types:
   feat/     - New feature implementation
@@ -120,15 +125,15 @@ Types:
 **Commit Message Convention**
 
 ```
-Format:    <type>(feat-XXX): <description>
+Format:    <type>(feat-XXXX): <description>
 
 Examples:
-  feat(feat-002): implement user registration flow
-  fix(feat-003): correct tax calculation for EU customers
-  test(feat-002): add unit tests for checkout flow
+  feat(feat-0002): implement user registration flow
+  fix(feat-0003): correct tax calculation for EU customers
+  test(feat-0002): add unit tests for checkout flow
 
 Rules:
-- ALWAYS include feature ID in parentheses: (feat-XXX)
+- ALWAYS include feature ID in parentheses: (feat-XXXX)
 - Use imperative mood: "add" not "added", "fix" not "fixed"
 - First letter lowercase
 - No period at the end
@@ -138,11 +143,11 @@ Rules:
 **PR Naming**
 
 ```
-Format:    <type>(feat-XXX): <Short Description>
+Format:    <type>(feat-XXXX): <Short Description>
 
 Template for PR Description:
   ## Related User Story
-  Closes spec-product/feat-XXX.yml
+  Closes spec-product/feat-XXXX-dd-mm-yy-hh-mm/feat-XXXX.yml
 
   ## Changes
   - [List of changes]
@@ -160,9 +165,9 @@ Template for PR Description:
 Each `.yml` file MUST follow this structure:
 
 ```yaml
-# spec-product/feat-XXX-name.yml
+# spec-product/feat-XXXX-dd-mm-yy-hh-mm/feat-XXXX.yml
 story:
-  id: "feat-XXX"
+  id: "feat-XXXX"
   type: "discovery|feature|technical|pain|improvement|use-case"
   status: "draft|refined|ready|in-review|approved|done"
 
@@ -202,7 +207,7 @@ story:
     cost_savings: "[estimate]"
 
   dependencies:
-    stories: ["feat-001", "feat-002"]
+    stories: ["feat-0001", "feat-0002"]
     systems: ["External API", "Database"]
     teams: ["Team A", "Team B"]
 
@@ -210,14 +215,14 @@ story:
     - "[Additional context]"
 
   git:
-    branch_name: "feat/feat-XXX-short-description"
-    commit_prefix: "feat(feat-XXX):"
-    pr_title: "feat(feat-XXX): Short description"
+    branch_name: "feat/feat-XXXX-short-description"
+    commit_prefix: "feat(feat-XXXX):"
+    pr_title: "feat(feat-XXXX): Short description"
     related_commits: []
 
   metadata:
-    created_at: "YYYY-MM-DD"
-    updated_at: "YYYY-MM-DD"
+    created_at: "dd-mm-yy-hh-mm"
+    updated_at: "dd-mm-yy-hh-mm"
     author: "[name]"
     source: "discovery|stakeholder|analysis"
 ```
@@ -226,8 +231,8 @@ story:
 
 ## Expected Output
 
-- `spec-product/feat-001-discovery.yml` - Discovery summary
-- `spec-product/feat-002-*` through `feat-004-*` - Per problem, request, and improvement
+- `spec-product/feat-0001-dd-mm-yy-hh-mm/feat-0001.yml` - Discovery summary
+- `spec-product/feat-0002-*` through `feat-0004-*` - Per problem, request, and improvement
 - Stakeholder map documented
 
 ---
@@ -238,8 +243,10 @@ story:
 - [ ] Minimum 3 context/constraints documented
 - [ ] Minimum 3 requests/ideas documented
 - [ ] Stakeholder map created
-- [ ] User Story YAML files created in `spec-product/`
+- [ ] Spec folders created in `spec-product/` following naming convention
+- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
 - [ ] All YAML files follow the schema (id, type, as_a, i_want, so_that, product)
+- [ ] `metadata.created_at` matches folder timestamp
 - [ ] Git naming conventions documented for the team
 
 ---
@@ -250,5 +257,10 @@ If any Exit Criteria item is missing:
 1. Halt. Do not proceed to Phase 02.
 2. Identify the missing item.
 3. Ask the user clarifying questions to fill the gap.
-4. Update the relevant YAML file.
+4. Update the relevant YAML file or rename the folder if needed.
 5. Re-verify the Exit Criteria checklist.
+
+If a folder name violates the convention:
+1. Rename it to `feat-XXXX-dd-mm-yy-hh-mm/` format.
+2. Ensure the file inside is `feat-XXXX.yml`.
+3. Re-verify before proceeding.

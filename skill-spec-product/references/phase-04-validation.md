@@ -6,7 +6,7 @@ Secure stakeholder sign-off and verify that specs are complete, consistent, and 
 
 ## Input Required
 
-- Specified YAML files from `spec-product/` (status `ready` or `in-review`)
+- Specified spec folders from `spec-product/` (status `ready` or `in-review`)
 - Quarter roadmap
 - Stakeholder map
 
@@ -55,10 +55,10 @@ Verify that specs do not contradict each other.
 ```
 CONSISTENCY AUDIT
 
-Story A: feat-002
+Story A: feat-0002
   Says: "User can change email without re-verification"
 
-Story B: feat-008
+Story B: feat-0008
   Says: "All email changes require re-verification"
 
 CONFLICT DETECTED
@@ -85,7 +85,7 @@ For every P0 story, a formal decision is required.
 ```
 GO / NO-GO TEMPLATE
 
-Story: feat-XXX [Name]
+Story: feat-XXXX [Name]
 
 Criteria Met:
   [ ] Problem statement validated
@@ -113,6 +113,7 @@ Signed by:
 - Risk register with owners and response plans
 - Go / No-Go decisions for all P0 stories
 - Story statuses updated to `approved`
+- All `spec-product/feat-*/` folders verified: naming convention intact, one file per folder, timestamps match
 
 ---
 
@@ -125,6 +126,9 @@ Signed by:
 - [ ] Go / No-Go decisions documented
 - [ ] Story statuses updated to `approved`
 - [ ] Engineering lead has acknowledged readiness to receive handoff
+- [ ] All spec folders follow naming convention: `feat-XXXX-dd-mm-yy-hh-mm/`
+- [ ] Each folder contains exactly one file: `feat-XXXX.yml`
+- [ ] `metadata.updated_at` timestamp updated on modified specs
 
 ---
 
@@ -135,3 +139,9 @@ If a story receives NO-GO:
 2. Document the specific gap that caused the rejection.
 3. Update the YAML with the required changes.
 4. Re-run Phase 04 validation before attempting handoff again.
+
+If a spec folder naming convention is violated:
+1. Rename the folder to `feat-XXXX-dd-mm-yy-hh-mm/` format.
+2. Rename the file inside to `feat-XXXX.yml`.
+3. Update any cross-references.
+4. Re-verify before proceeding.

@@ -1,9 +1,9 @@
-# spec-product/feat-002-user-registration.yml
+# spec-product/feat-0002-dd-mm-yy-hh-mm/feat-0002.yml
 # Template: Feature - User Registration
 # Example of a functional feature converted to user story
 
 story:
-  id: "feat-002"
+  id: "feat-0002"
   type: "feature"
   status: "refined"
 
@@ -72,7 +72,7 @@ story:
     revenue_impact: "Critical - entry point for all users"
 
   dependencies:
-    stories: ["feat-001"]
+    stories: ["feat-0001"]
     systems:
       - "Email Service (SendGrid/AWS SES)"
       - "PostgreSQL Database"
@@ -85,7 +85,7 @@ story:
     - "Consider social login integration in future (Google, GitHub)"
 
   metadata:
-    created_at: "YYYY-MM-DD"
-    updated_at: "YYYY-MM-DD"
+    created_at: "dd-mm-yy-hh-mm"
+    updated_at: "dd-mm-yy-hh-mm"
     author: "System"
     source: "discovery"

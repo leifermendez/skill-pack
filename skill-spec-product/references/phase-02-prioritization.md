@@ -6,7 +6,7 @@ Transform the raw requirements package into a ranked, time-bound roadmap. Decide
 
 ## Input Required
 
-- All YAML files from `spec-product/` created in Phase 01
+- All spec folders from `spec-product/` created in Phase 01
 - Stakeholder map
 - Business KPIs and strategic goals
 
@@ -51,14 +51,14 @@ PRIORITIZATION MATRIX
                  │
      Strategic   │   Quick Wins
      Initiatives │   (Do First)
-                 │
-    ─────────────┼─────────────
-                 │
-     Fill-ins    │   Thankless
-     (Do Later)  │   Tasks (Avoid)
-                 │
+                  │
+     ────────────┼─────────────
+                  │
+     Fill-ins     │   Thankless
+     (Do Later)   │   Tasks (Avoid)
+                  │
             Low Impact
-                 Low Effort    High Effort
+                  Low Effort    High Effort
 ```
 
 ### Step 2.3: Quarter Roadmap
@@ -70,8 +70,8 @@ QUARTER ROADMAP
 
 Q1 (Now)
 ├── Theme: [Quarterly goal]
-├── P0 Stories: [feat-002, feat-003, ...]
-├── P1 Stories: [feat-005, feat-006, ...]
+├── P0 Stories: [feat-0002, feat-0003, ...]
+├── P1 Stories: [feat-0005, feat-0006, ...]
 └── Milestone: [Specific deliverable by end of quarter]
 
 Q2 (Next)
@@ -96,10 +96,10 @@ Before locking the roadmap, verify that no story depends on something scheduled 
 ```
 DEPENDENCY CHECKLIST
 
-Story ID │ Dependencies │ Scheduled Quarter │ Conflict?
-─────────┼──────────────┼───────────────────┼──────────
-feat-002 │ feat-001     │ Q1                │ OK
-feat-003 │ feat-007     │ Q2                │ BLOCKED
+Story ID    │ Dependencies │ Scheduled Quarter │ Conflict?
+────────────┼──────────────┼───────────────────┼──────────
+feat-0002   │ feat-0001    │ Q1                │ OK
+feat-0003   │ feat-0007    │ Q2                │ BLOCKED
 ```
 
 If a dependency is scheduled later, either:
@@ -116,6 +116,7 @@ If a dependency is scheduled later, either:
 - Quarter roadmap (Q1, Q2, Q3+)
 - Dependency conflict resolution
 - Updated YAML files with `business.priority` and `dependencies` filled
+- Spec folders verified: naming convention, timestamps match, one file per folder
 
 ---
 
@@ -127,6 +128,8 @@ If a dependency is scheduled later, either:
 - [ ] P0 stories identified and approved by decision makers
 - [ ] P1 and P2 stories slotted into quarters or backlog
 - [ ] YAML files updated with priority and dependency information
+- [ ] All `spec-product/feat-*/` folders still follow naming convention
+- [ ] `metadata.updated_at` timestamp updated on modified specs
 
 ---
 
@@ -136,3 +139,8 @@ If a dependency conflict cannot be resolved:
 1. Flag the conflict in the risk register.
 2. Schedule a stakeholder review to decide: move, split, or descope.
 3. Do not proceed to Phase 03 until the conflict is resolved.
+
+If a folder or file naming convention is violated during updates:
+1. Rename the folder or file to match the convention.
+2. Update any internal references (dependencies, PR templates).
+3. Re-verify before proceeding.
