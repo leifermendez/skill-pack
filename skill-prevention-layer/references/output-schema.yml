@@ -1,0 +1,154 @@
+# Esquema YAML de Salida Final
+
+Esquema estricto que el agente LLM debe seguir al generar el reporte final de `skill-prevention-layer`.
+
+## Raiz
+
+```yaml
+type: object
+required: [scan, risks, gate, actions_required]
+properties:
+  scan:
+    $ref: "#/definitions/scan"
+  risks:
+    $ref: "#/definitions/risks"
+  gate:
+    $ref: "#/definitions/gate"
+  actions_required:
+    $ref: "#/definitions/actions_required"
+```
+
+## Definiciones
+
+### scan
+
+```yaml
+type: object
+required: [diff_range, mode, files_changed, lines_added, lines_removed]
+properties:
+  diff_range:
+    type: string
+    description: "Rango del diff evaluado. Ejemplos: HEAD~1..HEAD, --cached, feature-branch...main"
+  mode:
+    type: string
+    enum: [staged, range, head, file]
+    description: "Modo de extraccion del diff"
+  commit_hash:
+    type: string
+    description: "Hash del commit HEAD (si aplica). Opcional."
+  files_changed:
+    type: integer
+    minimum: 0
+    description: "Numero de archivos distintos en el diff"
+  lines_added:
+    type: integer
+    minimum: 0
+    description: "Total de lineas añadidas"
+  lines_removed:
+    type: integer
+    minimum: 0
+    description: "Total de lineas eliminadas"
+```
+
+### risks
+
+```yaml
+type: array
+items:
+  type: object
+  required: [category, severity, rule, file, line_number, match, message, action, confidence]
+  properties:
+    category:
+      type: string
+      enum: [Seguridad, Datos, Dependencias]
+      description: "Categoria del riesgo"
+    severity:
+      type: string
+      enum: [critical, high, medium, low]
+      description: "Nivel de severidad"
+    rule:
+      type: string
+      description: "Codigo identificador del patron que disparo el riesgo. Ej: AWS_KEY_IN_CODE"
+    file:
+      type: string
+      description: "Ruta del archivo donde se detecto"
+    line_number:
+      type: integer
+      minimum: 1
+      description: "Numero de linea aproximado en el archivo nuevo"
+    match:
+      type: string
+      description: "Texto exacto o substring que disparo el patron regex"
+    message:
+      type: string
+      description: "Descripcion legible del riesgo para humanos"
+    action:
+      type: string
+      enum: [BLOCK, REVIEW, INFO]
+      description: >
+        BLOCK: para critical y high. Bloquea el gate.
+        REVIEW: para medium. Requiere revision pero no bloquea.
+        INFO: para low. Informativo.
+    confidence:
+      type: string
+      enum: [high, medium, low]
+      description: "Certeza del match basado en regex/heuristica"
+    suggestion:
+      type: string
+      description: "Sugerencia concreta de correccion. Opcional pero recomendado."
+```
+
+### gate
+
+```yaml
+type: object
+required: [block, reason, max_severity]
+properties:
+  block:
+    type: boolean
+    description: "true si hay al menos un riesgo critical o high sin override"
+  reason:
+    type: string
+    description: "Explicacion legible de por que se bloquea o se permite"
+  max_severity:
+    type: string
+    enum: [critical, high, medium, low, none]
+    description: "Severidad maxima encontrada en todos los riesgos"
+  pass_conditions:
+    type: string
+    description: "Condiciones que deben cumplirse para desbloquear. Opcional."
+```
+
+### actions_required
+
+```yaml
+type: array
+description: "Acciones concretas y ejecutables para corregir cada riesgo que bloquea"
+items:
+  type: object
+  required: [priority, action]
+  properties:
+    priority:
+      type: string
+      enum: [P0, P1, P2]
+      description: >
+        P0: Riesgo critical. Debe corregirse ANTES de cualquier otro paso.
+        P1: Riesgo high. Debe corregirse antes del merge.
+        P2: Riesgo medium/low. Debe revisarse.
+    action:
+      type: string
+      description: "Descripcion legible y concreta de la accion a realizar"
+    command:
+      type: string
+      description: "Comando bash ejecutable directamente (si aplica) o sugerencia de codigo"
+```
+
+## Reglas de Validacion
+
+1. Si `gate.block` es `true`, `actions_required` debe tener al menos un item con `priority: P0`.
+2. Todo riesgo con `severity: critical` o `high` debe tener `action: BLOCK`.
+3. Todo riesgo con `severity: medium` debe tener `action: REVIEW`.
+4. Todo riesgo con `severity: low` debe tener `action: INFO`.
+5. `max_severity` en `gate` debe coincidir con la severidad mas alta presente en `risks`.
+6. `files_changed`, `lines_added`, `lines_removed` deben ser enteros >= 0.
+7. `line_number` en cada riesgo debe ser >= 1.
