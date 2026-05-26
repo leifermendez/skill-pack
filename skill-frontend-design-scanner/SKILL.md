@@ -274,6 +274,7 @@ Based on research of major tech companies' design systems:
 - `assets/extract-tokens.js` — Token extraction from CSS/SCSS/JSX/Vue
 - `assets/detect-css-in-js.js` — CSS-in-JS library detection (styled-components, Emotion, StyleX)
 - `assets/token-schema.json` — Standardized token output schema
+- `assets/scan-directory-tree.js` — Directory tree scanner (paths, .gitignore aware, CLI + API)
 - `references/architectures.md` — CSS architecture patterns reference
 - `references/tailwind-detection.md` — Tailwind-specific detection patterns
 - `references/faang-patterns.md` — FAANG design system patterns and detection algorithms
