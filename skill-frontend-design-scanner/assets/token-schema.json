@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Design System Token Schema",
+  "description": "Standardized output schema for frontend design system scans",
+  "type": "object",
+  "required": ["scan_summary", "tokens"],
+  "properties": {
+    "scan_summary": {
+      "type": "object",
+      "properties": {
+        "project_path": { "type": "string" },
+        "scan_timestamp": { "type": "string", "format": "date-time" },
+        "frameworks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "version": { "type": "string" },
+              "config_path": { "type": "string" }
+            }
+          }
+        },
+        "css_architecture": {
+          "type": "object",
+          "properties": {
+            "primary": { "type": "string" },
+            "secondary": { "type": ["string", "null"] },
+            "confidence": { "type": "number" }
+          }
+        },
+        "component_stats": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "integer" },
+            "by_level": {
+              "type": "object",
+              "properties": {
+                "atoms": { "type": "integer" },
+                "molecules": { "type": "integer" },
+                "organisms": { "type": "integer" },
+                "templates": { "type": "integer" },
+                "pages": { "type": "integer" }
+              }
+            },
+            "base_components": {
+              "type": "object",
+              "properties": {
+                "buttons": { "type": "array", "items": { "type": "string" } },
+                "inputs": { "type": "array", "items": { "type": "string" } },
+                "selects": { "type": "array", "items": { "type": "string" } },
+                "textareas": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "properties": {
+        "fonts": {
+          "type": "object",
+          "properties": {
+            "families": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "fallback": { "type": "string" },
+                  "source": { "type": "string" }
+                }
+              }
+            },
+            "sizes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "value": { "type": "string" },
+                  "px": { "type": "number" },
+                  "usage_count": { "type": "integer" }
+                }
+              }
+            },
+            "weights": {
+              "type": "array",
+              "items": { "type": ["string", "integer"] }
+            },
+            "styles": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "border_radius": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": { "type": "string" },
+              "px": { "type": "number" },
+              "usage_count": { "type": "integer" }
+            }
+          }
+        },
+        "colors": {
+          "type": "object",
+          "properties": {
+            "primary": { "type": ["string", "null"] },
+            "secondary": { "type": ["string", "null"] },
+            "accent": { "type": ["string", "null"] },
+            "neutrals": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "semantic": {
+              "type": "object",
+              "properties": {
+                "success": { "type": ["string", "null"] },
+                "error": { "type": ["string", "null"] },
+                "warning": { "type": ["string", "null"] },
+                "info": { "type": ["string", "null"] }
+              }
+            }
+          }
+        },
+        "spacing": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": { "type": "string" },
+              "px": { "type": "number" },
+              "usage_count": { "type": "integer" }
+            }
+          }
+        },
+        "shadows": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "consistency_score": { "type": "number" },
+        "hardcoded_values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": { "type": "string" },
+              "line": { "type": "integer" },
+              "value": { "type": "string" }
+            }
+          }
+        },
+        "token_coverage": { "type": "number" },
+        "recommendations": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
