@@ -41,6 +41,25 @@ This file registers all project-specific skills available in this repository.
 ### skill-style-css-clean
 - **Path:** `skill-style-css-clean/SKILL.md`
 
+### skill-security-checklist
+- **Path:** `skill-security-checklist/SKILL.md`
+- **Trigger:** security audit, codebase review, technical debt assessment, architecture analysis
+- **Description:** Comprehensive audit of any codebase detecting frameworks, languages, architecture patterns, and pain points with pros/cons tables.
+- **Assets:**
+  - `assets/audit-template.md` - Base template for the final markdown report
+  - `assets/detect-stack.sh` - Detect languages, frameworks, and dependencies
+  - `assets/detect-architecture.sh` - Identify architecture patterns (DDD, MVC, Hexagonal, etc.)
+  - `assets/detect-infrastructure.sh` - Detect Docker, K8s, CI/CD, cloud infrastructure
+  - `assets/analyze-complexity.sh` - Measure cyclomatic complexity, file/function length, duplication
+  - `assets/detect-security-risks.sh` - Scan for hardcoded secrets, SQL injection, XSS, insecure deps
+  - `assets/assess-tech-debt.sh` - Find TODOs, deprecated deps, missing tests, documentation gaps
+  - `assets/generate-audit-report.sh` - Aggregate all data into a single markdown report
+- **References:**
+  - `references/architecture-patterns.md` - Reference guide for architecture pattern detection
+  - `references/code-smells.md` - Catalog of code smells and anti-patterns
+  - `references/complexity-metrics.md` - Thresholds and interpretation for complexity metrics
+  - `references/security-checklist.md` - Comprehensive security checks and mitigation strategies
+
 ## Usage
 
 To use any skill, reference it in your agent configuration or include the skill path in your prompt.
