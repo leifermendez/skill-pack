@@ -8,8 +8,45 @@ description: >-
 compatibility: Framework agnostic. Works with Node.js, Python, Java, PHP, etc.
 metadata:
   author: leifermendez
-  version: "2.0"
+  version: "2.1"
   tags: "clean-architecture, ddd, solid, dependency-inversion, layered-architecture"
+---
+
+## Overview
+
+This skill enforces Clean Architecture and Domain-Driven Design (DDD) principles across any codebase. When invoked, it identifies the current software architecture (or lack thereof), detects layer violations and anti-patterns, and either recommends improvements within the existing architecture or recommends the best architecture for the project's size and complexity. It applies the essential 4-layer model (Domain, Application, Infrastructure, Interface) without over-engineering.
+
+**Trigger phrases:** "clean architecture", "DDD", "analyze architecture", "layer violations", "dependency rule", "refactor architecture", "identify architecture", "recommend architecture", "architecture audit".
+
+## Parameters
+
+The agent requires access to the project's source files. Before starting, confirm:
+
+| Input | Required | Description |
+|---|---|---|
+| Project source directory | Yes | The root path or `src/` folder to scan |
+| Framework / language | Auto-detected | Detected from `package.json`, file extensions, config files |
+| Mode | Optional | `identify` (detect current arch), `recommend` (suggest best arch), or `enforce` (apply Clean Architecture patterns) |
+
+## Returns
+
+This skill produces one or more of the following outputs depending on mode:
+
+- **Architecture Identification block**: detected architecture name, confidence level (High/Medium/Low), signals found, violations detected
+- **Architecture Recommendation block**: recommended architecture, reason tied to project traits, migration path (Week 1 → Month 2+), what to avoid
+- **Improvement Roadmap**: risk/impact matrix of proposed changes (Quick Wins → Major Projects), prioritized by low-risk/high-impact first
+- **Code examples**: file header templates, layer structure examples, corrected code snippets for violations found
+
+## Error Handling
+
+| Situation | Action |
+|---|---|
+| No source files found | Ask the user to confirm the project path; check for non-standard directories |
+| Architecture confidence is Low | Automatically proceed to Architecture Recommendation |
+| Project is too small for Clean Architecture | Recommend Feature-based or MVC; document the anti-over-engineering guard reasoning |
+| Circular dependency detected | Flag as CRITICAL violation; do not attempt to silently resolve it |
+| Multiple valid architectures detected | Report all candidates with confidence levels; ask the user to confirm context |
+
 ---
 
 ## Core Philosophy: Basic Pillars, No Over-Engineering
@@ -66,13 +103,152 @@ Always identify the main source directory before analyzing architecture.
 
 ---
 
+## Architecture Identification
+
+When a user asks to "analyze", "review", or "audit" a project, run this identification protocol **before** any recommendations or improvements.
+
+### Step 1 — Collect Signals
+
+Scan the project for the following observable signals. Check folder names, file names, import statements, and inline comments.
+
+#### Signal Map
+
+| Architecture | Folder Signals | File Signals | Code Signals |
+|---|---|---|---|
+| **Clean Architecture** | `domain/`, `application/`, `infrastructure/`, `interface/` | `*.entity.ts`, `*.use-case.ts`, `*.repository.interface.ts`, `*.port.ts` | `LAYER:` comments, interfaces in domain, no framework imports in domain |
+| **Hexagonal (Ports & Adapters)** | `ports/`, `adapters/`, `driven/`, `driving/` | `*.port.ts`, `*.adapter.ts`, `*.in.ts`, `*.out.ts` | Interfaces grouped as inbound/outbound ports |
+| **DDD (Domain-Driven Design)** | `bounded-contexts/`, `aggregates/`, `value-objects/`, `domain-events/` | `*.aggregate.ts`, `*.value-object.ts`, `*.domain-event.ts` | Aggregate roots, domain events, ubiquitous language |
+| **MVC** | `models/`, `views/`, `controllers/` | `*.model.ts`, `*.controller.ts`, `*.view.ts` | Framework decorators (`@Controller`, `@Model`), direct ORM in models |
+| **Feature-based / Vertical Slice** | Feature folders at root (`users/`, `orders/`, `payments/`) each with own controller + service + model | Files grouped by feature, not by type | Self-contained modules per feature with no shared domain |
+| **Layered / N-tier** | `presentation/`, `business/` or `services/`, `data/` or `repositories/`, `common/` | `*.service.ts`, `*.repository.ts` (without domain interface) | Services call repositories directly, no port/interface inversion |
+| **Monolithic / No pattern** | Flat root structure, all files in one folder | Mixed concerns in single files (e.g., route + DB call in same file) | Controllers calling DB directly, business logic in HTTP handlers |
+
+### Step 2 — Score & Decide
+
+Count signals per architecture. Apply this rule:
+
+- **3+ signals** from one architecture → **High confidence**
+- **1-2 signals** from one architecture → **Medium confidence**
+- **0 signals** or signals from 3+ different architectures → **Low confidence / No clear pattern**
+
+### Step 3 — Detect Violations
+
+Even when an architecture is identified, check for these cross-layer violations:
+
+```python
+❌ Domain file imports from Infrastructure or a framework
+❌ Controller calls a repository directly (skips use case)
+❌ Use case contains SQL queries or ORM calls
+❌ Business logic lives inside an HTTP handler
+❌ Circular imports between layers
+❌ Entity decorated with ORM decorators (e.g. @Entity from TypeORM in domain/)
+```
+
+### Step 4 — Produce Output
+
+Always output this block after running the protocol:
+
+```text
+ARCHITECTURE DETECTED: <name or "No clear pattern">
+CONFIDENCE: High | Medium | Low
+SIGNALS FOUND:
+  ✅ <signal description>
+  ⚠️  <partial signal — present but incomplete>
+VIOLATIONS:
+  ❌ <violation found>
+  (none if clean)
+NEXT STEP: <"See Improvement Roadmap" | "See Architecture Recommendation">
+```
+
+If confidence is **Low** or architecture is **"No clear pattern"**, proceed immediately to `## Architecture Recommendation`.
+
+---
+
+## Architecture Recommendation
+
+Triggered when: Architecture Identification returns Low confidence, no clear pattern, or the user explicitly asks for a recommendation.
+
+### Step 1 — Collect Project Traits
+
+Before recommending, gather these traits from the codebase:
+
+```text
+PROJECT SIZE:      <file count, rough LOC>
+TEAM SIZE:         <solo | small (2-5) | medium (5-15) | large (15+)>
+DOMAIN COMPLEXITY: <simple CRUD | moderate (some rules) | complex (many entities, invariants)>
+TRAFFIC/SCALE:     <internal tool | startup | scaling | enterprise>
+FRAMEWORK:         <Express | NestJS | Django | Rails | Spring | other>
+ASYNC/EVENTS:      <yes (queues, events, webhooks) | no>
+MULTIPLE CONTEXTS: <yes (orders, payments, users as separate systems) | no>
+```
+
+### Step 2 — Apply Decision Matrix
+
+Use the **first matching row** (ordered from simplest to most complex):
+
+| Condition | Recommended Architecture | Reason |
+|---|---|---|
+| <10 source files OR pure CRUD with no business rules | **Feature-based (simple modules)** | No architecture overhead needed yet. Group by feature, add structure later. |
+| Small project, solo/small team, growing CRUD | **MVC** | Proven, low ceremony, well-documented. Every framework supports it natively. |
+| Medium project, domain logic present (validations, rules, workflows) | **Clean Architecture (4 layers)** | Separates business rules from frameworks. Safe to evolve without rewriting. |
+| Large project, multiple bounded contexts, rich domain | **DDD + Hexagonal** | Bounded contexts prevent coupling. Hexagonal keeps the domain testable and framework-free. |
+| Event-heavy system (queues, webhooks, async flows, multiple consumers) | **Event-Driven + CQRS** | Commands and queries separated; events as the integration contract. |
+| Independent deployable modules already needed (scaling bottlenecks proven) | **Microservices** | Only recommend if the team has already hit scaling limits. Never as a starting point. |
+
+> **Anti-over-engineering guard:** NEVER recommend Clean Architecture, DDD, or Microservices for a project with fewer than ~10 source files or a simple CRUD with no business rules. Always match the architecture to the actual complexity present, not the complexity anticipated.
+
+### Step 3 — Produce Output
+
+```text
+RECOMMENDATION: <architecture name>
+REASON: <1-2 sentences tied to the project traits detected above>
+COMPLEXITY FIT: <why this architecture matches the project's current size and domain>
+MIGRATION PATH:
+  Week 1:    <lowest-risk quick win — usually reorganizing folders or extracting one layer>
+  Week 2-4:  <first structural change — e.g. create repository interfaces, extract use cases>
+  Month 2+:  <gradual migration — one feature or bounded context at a time>
+WHAT TO AVOID: <the next architecture up the complexity ladder and why not yet>
+```
+
+### Recommendation Examples
+
+**Example A — Small Express app, ~8 files, simple CRUD**
+```text
+RECOMMENDATION: Feature-based (simple modules)
+REASON: The project has fewer than 10 source files and no business rules beyond basic CRUD. 
+        No architecture overhead is warranted at this stage.
+COMPLEXITY FIT: Grouping by feature (users/, products/) keeps the codebase navigable 
+                without imposing layers that would add zero value today.
+MIGRATION PATH:
+  Week 1:    Group existing files into feature folders (users/, products/)
+  Week 2-4:  Extract a shared lib/ for utilities and validators
+  Month 2+:  Add a services/ layer per feature if business logic grows
+WHAT TO AVOID: Clean Architecture — 4 layers for 8 files is pure ceremony.
+```
+
+**Example B — NestJS app, ~40 files, some domain logic, team of 4**
+```python
+RECOMMENDATION: Clean Architecture (4 layers)
+REASON: The project has growing domain logic and a small team that needs clear boundaries 
+        to avoid coupling features to the framework.
+COMPLEXITY FIT: 4 layers (Domain, Application, Infrastructure, Interface) map naturally 
+                onto NestJS modules and prevent business rules from leaking into controllers.
+MIGRATION PATH:
+  Week 1:    Add LAYER comments to all existing files; create domain/ and application/ folders
+  Week 2-4:  Extract repository interfaces to domain/; move use case logic out of controllers
+  Month 2+:  Migrate remaining features one use case at a time; add tests per migration
+WHAT TO AVOID: DDD + Hexagonal — no multiple bounded contexts justify the extra abstraction yet.
+```
+
+---
+
 ## Improvement Roadmap (Risk/Impact Matrix)
 
 When proposing architectural improvements, always prioritize by **LOW RISK + FAST IMPACT** first.
 
 ### The Improvement Matrix
 
-```
+```text
                     IMPACT
                Low        High
            ┌──────────┬──────────┐
@@ -126,21 +302,21 @@ When proposing architectural improvements, always prioritize by **LOW RISK + FAS
 ### Migration Strategy Example
 
 **Week 1-2: Quick Wins**
-```
+```python
 ✅ Add LAYER comments to all files
 ✅ Create repository interfaces (implement later)
 ✅ Move business logic from controllers to services
 ```
 
 **Week 3-4: Setup Infrastructure**
-```
+```text
 ✅ Implement one repository with tests
 ✅ Add dependency injection container
 ✅ Migrate one feature end-to-end
 ```
 
 **Month 2+: Gradual Migration**
-```
+```text
 🔄 Migrate remaining features one by one
 🔄 Keep old code working during transition
 🔄 Test after each migration
@@ -223,7 +399,7 @@ Available layer tags: `Domain` | `Application` | `Infrastructure` | `Interface`
 - Immutability preferred for Value Objects
 
 **Example Structure:**
-```
+```text
 src/domain/
 ├── entities/
 │   └── user.entity.ts
@@ -254,7 +430,7 @@ src/domain/
 - NO business logic - only coordination logic
 
 **Example Structure:**
-```
+```text
 src/application/
 ├── use-cases/
 │   ├── create-user.use-case.ts
@@ -286,7 +462,7 @@ src/application/
 - Handles technical details (caching, retries, connection pools)
 
 **Example Structure:**
-```
+```text
 src/infrastructure/
 ├── database/
 │   ├── prisma-user.repository.ts
@@ -319,7 +495,7 @@ src/infrastructure/
 - Returns HTTP responses (never expose domain entities directly)
 
 **Example Structure:**
-```
+```text
 src/interface/
 ├── http/
 │   ├── controllers/
@@ -338,7 +514,7 @@ src/interface/
 
 ## Dependency Rule (The Golden Rule)
 
-```
+```text
 ┌─────────────────────────────────┐
 │         INTERFACE               │  ◄── HTTP, CLI, GUI
 │         (Frameworks)            │

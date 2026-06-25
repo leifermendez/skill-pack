@@ -77,7 +77,7 @@ Do not activate for trivial single-file projects or when only linting/formatting
 5. **Detect Security Risks**
    - Run: `bash assets/detect-security-risks.sh <project_path>`
    - Scans: hardcoded secrets, SQL injection patterns, XSS vulnerabilities, insecure dependencies
-   - Checks: `.env` files, API keys, password patterns, `eval()` usage, raw SQL strings
+   - Checks: `.env` files, API keys, password patterns, dynamic code execution usage, raw SQL strings
    - Reports: critical risks, warnings, mitigation steps
 
 6. **Assess Technical Debt**

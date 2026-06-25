@@ -41,6 +41,24 @@ This file registers all project-specific skills available in this repository.
 ### skill-style-css-clean
 - **Path:** `skill-style-css-clean/SKILL.md`
 
+### skill-performance-audit
+- **Path:** `skill-performance-audit/SKILL.md`
+- **Trigger:** performance audit, bottleneck detection, N+1 queries, slow queries, bundle bloat, missing indexes, render thrashing, optimize performance
+- **Description:** Scans backend, frontend, and database layers for observable performance anti-patterns. Produces a severity-ranked audit report (CRITICAL / WARNING / NOTICE) with before/after code fixes for the top bottlenecks found.
+- **References:**
+  - `references/backend-bottlenecks.md` - N+1 queries, blocking I/O, pagination, caching patterns
+  - `references/frontend-bottlenecks.md` - Memoization, lazy loading, bundle optimization, image best practices
+  - `references/database-bottlenecks.md` - Indexing strategies, query optimization, transactions
+
+### skill-dead-code-legacy
+- **Path:** `skill-dead-code-legacy/SKILL.md`
+- **Trigger:** dead code, unused exports, legacy code, deprecated APIs, orphaned code, technical debt, zombie routes, unused dependencies, commented-out code, TODO cleanup
+- **Description:** Detects unused exports, unreachable code, zombie routes, orphaned test files, unused dependencies, deprecated API usage, outdated language idioms, and accumulated technical debt markers. Produces a three-tier severity report (REMOVE NOW / REVIEW & CLEAN / TECHNICAL DEBT) with safe removal guidance.
+- **References:**
+  - `references/dead-code-patterns.md` - Unused exports, unreachable code, zombie routes, orphaned tests, feature flags
+  - `references/legacy-patterns.md` - Deprecated React/Node.js APIs, old JS/Python idioms, outdated dependencies
+  - `references/tech-debt-signals.md` - TODO/FIXME taxonomy, commented-out code, duplication detection
+
 ### skill-security-checklist
 - **Path:** `skill-security-checklist/SKILL.md`
 - **Trigger:** security audit, codebase review, technical debt assessment, architecture analysis
